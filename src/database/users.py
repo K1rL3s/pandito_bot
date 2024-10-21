@@ -1,12 +1,9 @@
-from asyncpg import create_pool
+from asyncpg import Pool
 
 
-class DB:
-    def __init__(self) -> None:
-        self.db_pool = None
-
-    async def init(self, pg_url):
-        self.db_pool = await create_pool(pg_url)
+class UserDB:
+    def __init__(self, db_pool: Pool) -> None:
+        self.db_pool = db_pool
 
     async def create_user(self, tg: int, name: str, is_admin=False):
         async with self.db_pool.acquire() as conn:
@@ -34,9 +31,14 @@ class DB:
 
     async def update_user_balance(self, id: int, amount: int, invoker: int):
         async with self.db_pool.acquire() as conn:
-            invoker_user = await conn.fetchval("SELECT id FROM users WHERE id = $1", invoker)
+            invoker_user = await conn.fetchval(
+                "SELECT id FROM users WHERE id = $1",
+                invoker,
+            )
             if not invoker_user:
-                raise ValueError(f"Invoker with id {invoker} does not exist in users table")
+                raise ValueError(
+                    f"Invoker with id {invoker} does not exist in users table",
+                )
             async with conn.transaction():
                 # Обновляем баланс пользователя
                 sql_update = """
@@ -51,7 +53,11 @@ class DB:
                 INSERT INTO logs (user_id, description)
                 VALUES ($1, $2);
                 """
-                await conn.execute(sql_insert_log, invoker, f"Added money {amount} to user {id}")
+                await conn.execute(
+                    sql_insert_log,
+                    invoker,
+                    f"Added money {amount} to user {id}",
+                )
         return new_balance
 
     async def set_user_balance(self, id: int, amount: int, invoker: int):
@@ -83,40 +89,6 @@ class DB:
             """
             return await conn.fetchval(sql, tg)
 
-    async def create_product(self, name: str, description: str, price: int, stock: int):
-        async with self.db_pool.acquire() as conn:
-            sql = """
-            INSERT INTO products (name, description, price, stock)
-            VALUES ($1, $2, $3, $4)
-            RETURNING id;
-            """
-            return await conn.fetchval(sql, name, description, price, stock)
-
-    async def get_product(self, product_id: int):
-        async with self.db_pool.acquire() as conn:
-            sql = "SELECT * FROM products WHERE id = $1;"
-            return await conn.fetchrow(sql, product_id)
-
-    async def update_product_stock(self, product_id: int, new_stock: int):
-        async with self.db_pool.acquire() as conn:
-            sql = """
-            UPDATE products 
-            SET stock = $1, updated_at = NOW() 
-            WHERE id = $2
-            RETURNING stock;
-            """
-            return await conn.fetchval(sql, new_stock, product_id)
-
-    async def change_product_price(self, product_id: int, new_price: int):
-        async with self.db_pool.acquire() as conn:
-            sql = """
-            UPDATE products 
-            SET price = $1, updated_at = NOW()
-            WHERE id = $2
-            RETURNING price;
-            """
-            return await conn.fetchval(sql, new_price, product_id)
-
     async def get_user_purchases(self, user_id: int):
         async with self.db_pool.acquire() as conn:
             sql = """
@@ -136,53 +108,12 @@ class DB:
             """
             return await conn.fetch(sql, user_id)
 
-    async def get_available_products(self):
-        async with self.db_pool.acquire() as conn:
-            sql = """
-            SELECT * FROM products 
-            WHERE stock > 0;
-            """
-            return await conn.fetch(sql)
-
-    async def log_action(self, user_id: int, description: str):
-        async with self.db_pool.acquire() as conn:
-            sql = """
-            INSERT INTO logs (user_id, description) 
-            VALUES ($1, $2)
-            RETURNING id;
-            """
-            return await conn.fetchval(sql, user_id, description)
-
-    async def get_user_logs(self, user_id: int):
-        async with self.db_pool.acquire() as conn:
-            sql = """
-            SELECT * FROM logs 
-            WHERE user_id = $1;
-            """
-            return await conn.fetch(sql, user_id)
-
-    async def transfer_funds(self, sender_id: int, receiver_id: int, amount: int):
-        async with self.db_pool.acquire() as conn:
-            sql = "SELECT transfer_funds($1, $2, $3);"
-            return await conn.fetchval(sql, sender_id, receiver_id, amount)
-
-    async def buy_product(self, user_id: int, product_id: int, quantity: int):
-        async with self.db_pool.acquire() as conn:
-            sql = "SELECT buy_product($1, $2, $3);"
-            return await conn.fetchval(sql, user_id, product_id, quantity)
-
     async def clear_user_purchases(self, user_id: int):
         async with self.db_pool.acquire() as conn:
             sql = "DELETE FROM purchases WHERE user_id = $1;"
             await conn.execute(sql, user_id)
 
-    async def delete_product(self, product_id: int):
+    async def transfer_funds(self, sender_id: int, receiver_id: int, amount: int):
         async with self.db_pool.acquire() as conn:
-            sql = "DELETE FROM products WHERE id = $1;"
-            await conn.execute(sql, product_id)
-
-    async def get_all_products(self):
-        async with self.db_pool.acquire() as conn:
-            sql = "SELECT * FROM products;"
-            return await conn.fetch(sql)
-
+            sql = "SELECT transfer_funds($1, $2, $3);"
+            return await conn.fetchval(sql, sender_id, receiver_id, amount)
