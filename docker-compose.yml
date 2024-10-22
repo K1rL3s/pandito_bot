@@ -1,38 +1,109 @@
+x-local: &local
+  restart: unless-stopped
+  links:
+    - database
+    - redis
+  depends_on:
+    database:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+    migrations:
+      condition: service_completed_successfully
+  env_file:
+    - .env
+  environment:
+    BOT_FATHER_TOKEN: ${BOT_FATHER_TOKEN}
+    TELEGRAM_DROP_UPDATES: ${TELEGRAM_DROP_UPDATES}
+    TELEGRAM_USE_WEBHOOK: ${TELEGRAM_USE_WEBHOOK}
+    TELEGRAM_RESET_WEBHOOK: ${TELEGRAM_RESET_WEBHOOK}
+    TELEGRAM_WEBHOOK_PATH: ${TELEGRAM_WEBHOOK_PATH}
+    TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET}
+    SERVER_HOST: ${SERVER_HOST}
+    SERVER_PORT: ${SERVER_PORT}
+    SERVER_URL: ${SERVER_URL}
+    DB_DRIVER: ${DB_DRIVER}
+    DB_HOST: ${DB_HOST}
+    DB_PORT: ${DB_PORT}
+    DB_USER: ${DB_USER}
+    DB_PASSWORD: ${DB_PASSWORD}
+    DB_NAME: ${DB_NAME}
+    REDIS_HOST: ${REDIS_HOST}
+    REDIS_PORT: ${REDIS_PORT}
+    REDIS_DB: ${REDIS_DB}
+    REDIS_PASSWORD: ${REDIS_PASSWORD}
+
 services:
 
   database:
     image: postgres:16.4-alpine3.20
-    container_name: pandito-bot-database
+    container_name: pandito-database
     restart: unless-stopped
+    volumes:
+      - pandito-volume:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: bot
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
-  bot:
-    container_name: pandito-bot
+  redis:
+    image: redis:7.2.6-alpine
+    container_name: pandito-redis
     restart: unless-stopped
+    volumes:
+      - pandito-volume:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    command: "redis-server --save 300 1 --loglevel warning --requirepass ${REDIS_PASSWORD}"
+
+  migrations:
+    <<: *local
+    restart: no
+    build:
+      context: .
+      dockerfile: ./src/migrations/Dockerfile
+    links:
+      - database
+    depends_on:
+      database:
+        condition: service_healthy
+
+
+  father-bot:
+    <<: *local
+    container_name: pandito-father-bot
     build:
       context: ./src
-      dockerfile: ./bot/Dockerfile
+      dockerfile: ./run/father/Dockerfile
     environment:
       PYTHONUNBUFFERED: 1
       PYTHONDONTWRITEBYTECODE: 1
-      TOKEN: ${TOKEN}
-      OWNER: ${OWNER}
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: bot
-      POSTGRES_HOST: database
-      POSTGRES_PORT: 5432
-    links:
-      - database
+
+  child-bots:
+    <<: *local
+    container_name: pandito-child-bots
+    build:
+      context: ./src
+      dockerfile: ./run/childs/Dockerfile
+    environment:
+      PYTHONUNBUFFERED: 1
+      PYTHONDONTWRITEBYTECODE: 1
 
 volumes:
-  db_data:
+  pandito-volume:
