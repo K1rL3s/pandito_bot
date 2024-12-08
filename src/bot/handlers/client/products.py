@@ -71,7 +71,6 @@ async def view_one_product_handler(
         await callback.message.answer(
             f"{product['id']}. <b>{product['name']}</b>\n\n{product['description']}",
             reply_markup=b_kb,
-            parse_mode="HTML",
         )
     else:
         c_bk = InlineKeyboardMarkup(

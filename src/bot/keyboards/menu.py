@@ -2,12 +2,15 @@ from typing import Any
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from database.repos.database import Database
+from database.models import UserModel
+from database.repos.users import UsersRepo
 
 
-async def generate_main_menu(user: dict[str, Any], db: Database):
-    stage = user.get("stage", 0)
-    if stage == 0:  # участник
+async def generate_main_menu(
+    user: UserModel,
+    users_repo: UsersRepo,
+) -> InlineKeyboardMarkup:
+    if user.stage == 0:  # участник
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [
@@ -26,7 +29,7 @@ async def generate_main_menu(user: dict[str, Any], db: Database):
                 ],
             ],
         )
-    if stage == 1:  # этапщик
+    if user.stage == 1:  # этапщик
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [
@@ -38,7 +41,7 @@ async def generate_main_menu(user: dict[str, Any], db: Database):
                 ],
             ],
         )
-    if stage == 2:  # продавец
+    if user.stage == 2:  # продавец
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [
@@ -54,7 +57,7 @@ async def generate_main_menu(user: dict[str, Any], db: Database):
                 [InlineKeyboardButton(text="Помощь", callback_data="help")],
             ],
         )
-    if stage == 3:  # RTUITLab
+    if user.stage == 3:  # RTUITLab
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [
@@ -67,7 +70,7 @@ async def generate_main_menu(user: dict[str, Any], db: Database):
             ],
         )
 
-    await db.change_user_stage(user["stage"], 0)
+    await users_repo.change_stage(user.id, 0)
 
     return InlineKeyboardMarkup(
         inline_keyboard=[

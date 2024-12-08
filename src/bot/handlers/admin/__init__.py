@@ -1,4 +1,5 @@
-from aiogram import Dispatcher, Router
+from aiogram import Dispatcher, F, Router
+from aiogram.filters import MagicData
 
 from .broadcast import router as broadcast_router
 from .logs import router as logs_router
@@ -9,7 +10,10 @@ from .users import router as users_router
 
 def include_admin_routers(dp: Dispatcher) -> None:
     admin_router = Router(name=__file__)
-    admin_router.message.filter()  # TODO: Фильтр на роль админа
+
+    for observer in admin_router.observers.values():
+        observer.filter(MagicData(F.user.is_admin))  # Фильтр на админку
+
     admin_router.include_routers(
         broadcast_router,
         logs_router,
@@ -17,4 +21,5 @@ def include_admin_routers(dp: Dispatcher) -> None:
         products_routes,
         users_router,
     )
+
     dp.include_router(admin_router)

@@ -11,7 +11,7 @@ class ProductsRepo(BaseAlchemyRepo):
         description: str,
         price: int,
         stock: int,
-    ) -> int:
+    ) -> ProductModel:
         product = ProductModel(
             name=name,
             description=description,
@@ -20,7 +20,7 @@ class ProductsRepo(BaseAlchemyRepo):
         )
         self.session.add(product)
         await self.session.commit()
-        return product.id  # TODO проверить что айди есть
+        return product  # TODO проверить что айди есть
 
     async def get_one(self, product_id: int) -> ProductModel | None:
         query = select(ProductModel).where(ProductModel.id == product_id)

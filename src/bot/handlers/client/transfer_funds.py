@@ -26,7 +26,6 @@ async def transfer_funds_handler(callback: CallbackQuery, state: FSMContext):
     await callback.message.answer(
         "Введите id человека, которому хотите перевести <b>Иткоины</b>",
         reply_markup=ckb,
-        parse_mode="HTML",
     )
 
 
@@ -54,7 +53,6 @@ async def transfer_funds_id_handler(message: Message, state: FSMContext, db: Dat
         f"Перевод будет произведен пользователю с именем <b>{receiver['name']}</b>\n\n"
         f"Если всё верно введите сумму перевода",
         reply_markup=ckb,
-        parse_mode="HTML",
     )
 
 

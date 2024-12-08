@@ -64,3 +64,21 @@ class ProductsService:
         await self.products_repo.set_stock(product_id, new_stock)
 
         return new_stock
+
+    async def set_stock(self, product_id: int, new_stock: int) -> int:
+        if new_stock < 0:
+            raise Exception  # TODO сделать ошибку
+        product = await self.products_repo.get_one(product_id)
+        if product is None:
+            raise Exception  # TODO сделать ошибку
+
+        return await self.products_repo.set_stock(product_id, new_stock)
+
+    async def set_price(self, product_id: int, new_price: int) -> int:
+        if new_price <= 0:
+            raise Exception
+        product = await self.products_repo.get_one(product_id)
+        if product is None:
+            raise Exception  # TODO сделать ошибку
+
+        return await self.products_repo.set_price(product_id, new_price)

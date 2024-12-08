@@ -5,11 +5,16 @@ from database.repos.base import BaseAlchemyRepo
 
 
 class UsersRepo(BaseAlchemyRepo):
-    async def create_user(self, tg_id: int, name: str, is_admin: bool = False) -> int:
+    async def create_user(
+        self,
+        tg_id: int,
+        name: str,
+        is_admin: bool = False,
+    ) -> UserModel:
         user = UserModel(id=tg_id, name=name, is_admin=is_admin)
         self.session.add(user)
         await self.session.commit()
-        return tg_id
+        return user
 
     async def get_user(self, tg_id: int) -> UserModel | None:
         query = select(UserModel).where(UserModel.id == tg_id)
@@ -26,7 +31,7 @@ class UsersRepo(BaseAlchemyRepo):
         await self.session.execute(query)
         await self.session.commit()
 
-    async def change_user_stage(self, tg_id: int, stage: int) -> None:
+    async def change_stage(self, tg_id: int, stage: int) -> None:
         query = update(UserModel).where(UserModel.id == tg_id).values(stage=stage)
         await self.session.execute(query)
         await self.session.commit()

@@ -22,6 +22,5 @@ async def menu_handler(message: Message, state: FSMContext, db: Database):
     await message.answer(
         text=menu_text(user["id"], user["balance"], user["stage"], user["is_admin"]),
         reply_markup=menu_kb,
-        parse_mode="HTML",
     )
     await message.delete()

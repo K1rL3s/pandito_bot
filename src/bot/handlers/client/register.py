@@ -36,7 +36,6 @@ async def register_name_handler(message: Message, state: FSMContext):
     await message.answer(
         f"Проверьте введенные данные!\n\nВас зовут <b>{full_name}</b>?",
         reply_markup=confirm_kb,
-        parse_mode="HTML",
     )
     await state.set_state(Registration.confirm)
     await state.update_data(name=full_name)

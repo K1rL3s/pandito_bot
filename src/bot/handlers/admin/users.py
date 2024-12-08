@@ -16,7 +16,7 @@ async def admin_change_stage(message: Message, command: CommandObject, db: Datab
     if command.args and len(command.args.split()) == 2:
         args = command.args.split()
         user_id, stage = int(args[0]), int(args[1])
-        await db.change_user_stage(user_id, stage)
+        await db.change_stage(user_id, stage)
         await message.answer("Успех!")
     else:
         await message.answer("Формат: /stage <user_id> <stage>")

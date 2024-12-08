@@ -1,8 +1,10 @@
 from aiogram import Bot, Router
 from aiogram.filters import Command, CommandObject, StateFilter
 from aiogram.types import Message
+from dishka import FromDishka
 
-from database.repos.database import Database
+from database.repos.users import UsersRepo
+
 
 router = Router(name=__file__)
 
@@ -12,17 +14,13 @@ async def admin_broadcast(
     message: Message,
     command: CommandObject,
     bot: Bot,
-    db: Database,
+    users_repo: FromDishka[UsersRepo],
 ) -> None:
-    user = await db.get_user(message.from_user.id)
-    if not user["is_admin"]:
-        await message.delete()
-        return
     if command.args:
         text = command.args
-        users = await db.get_all_users()
+        users = await users_repo.get_all_users()
         for user in users:
-            await bot.send_message(user["tg"], text)
+            await bot.send_message(user.id, text)  # TODO нормальная рассылка
         await message.answer("Успешный успех")
     else:
         await message.answer("Формат: /broadcast <message>")
