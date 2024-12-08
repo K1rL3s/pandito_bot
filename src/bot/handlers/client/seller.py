@@ -76,7 +76,7 @@ async def salesman_buyer_id_handler(message: Message, state: FSMContext, db: Dat
 
     data = await state.get_data()
     product_id = data["product_id"]
-    product = await db.get_product(product_id)
+    product = await db.get_one(product_id)
 
     if user["balance"] >= product["price"]:
         # Если средств хватает, списываем деньги и уменьшаем количество товара

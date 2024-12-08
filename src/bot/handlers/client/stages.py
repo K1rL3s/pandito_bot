@@ -88,7 +88,7 @@ async def stage_reward_handler(
     )
 
     # Начисляем валюту
-    await db.update_balance(participant_id, amount, user["id"])
+    await db.set_balance(participant_id, amount, user["id"])
 
     await callback.message.answer(
         f"Участнику с id {participant_id} начислено {amount} Ит.",

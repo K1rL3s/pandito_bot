@@ -52,7 +52,7 @@ async def view_one_product_handler(
 ) -> None:
     await callback.answer()
     await callback.message.delete()
-    product = await db.get_product(callback_data.id)
+    product = await db.get_one(callback_data.id)
     if int(product["stock"]) > 0:
         b_kb = InlineKeyboardMarkup(
             inline_keyboard=[
@@ -94,7 +94,7 @@ async def buy_product_handler(
     db: Database,
 ):
     await callback.answer()
-    product = await db.get_product(callback_data.id)
+    product = await db.get_one(callback_data.id)
     user = await db.get_user(callback.from_user.id)
     shop_bk = InlineKeyboardMarkup(
         inline_keyboard=[

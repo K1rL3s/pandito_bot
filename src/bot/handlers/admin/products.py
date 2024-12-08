@@ -34,7 +34,7 @@ async def admin_update_stock(message: Message, command: CommandObject, db: Datab
         product_id, new_stock = int(args[0]), int(args[1])
 
         # Обновляем количество товара
-        updated_stock = await db.update_stock(product_id, new_stock)
+        updated_stock = await db.set_stock(product_id, new_stock)
         if updated_stock is not None:
             await message.answer(
                 f"Количество товара с ID {product_id} обновлено до {new_stock}",
@@ -61,7 +61,7 @@ async def admin_change_product_price(
         product_id, new_price = int(args[0]), int(args[1])
 
         # Обновляем цену товара
-        updated_price = await db.update_price(product_id, new_price)
+        updated_price = await db.set_price(product_id, new_price)
         if updated_price is not None:
             await message.answer(
                 f"Цена товара с ID {product_id} изменена на {new_price}",

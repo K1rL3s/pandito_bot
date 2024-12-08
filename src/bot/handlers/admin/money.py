@@ -16,7 +16,7 @@ async def admin_add_money(message: Message, command: CommandObject, db: Database
     if command.args and len(command.args.split()) == 2:
         args = command.args.split()
         user_id, amount = int(args[0]), int(args[1])
-        await db.update_balance(user_id, amount, user["id"])
+        await db.set_balance(user_id, amount, user["id"])
         await message.answer(f"Добавлено {amount} пользователю {user_id}")
     else:
         await message.answer("Формат: /money <user_id> <amount>")
