@@ -2,7 +2,7 @@ from aiogram import F, Router
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
 from bot.callbacks.products import BuyProductCallback, ViewProductCallback
-from database.database import Database
+from database.repos.database import Database
 
 router = Router(name=__file__)
 
@@ -10,7 +10,7 @@ router = Router(name=__file__)
 @router.callback_query(F.data == "view_products")
 async def view_products_handler(callback: CallbackQuery, db: Database):
     await callback.answer()
-    products = await db.get_available_products()
+    products = await db.get_available()
     user = await db.get_user(callback.from_user.id)
     c_bk = InlineKeyboardMarkup(
         inline_keyboard=[

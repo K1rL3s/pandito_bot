@@ -1,5 +1,9 @@
 def menu_text(uid: int, balance: int, stage: int, is_admin: bool = False) -> str:
-    text = f"<b>Главное меню</b>\n\nВаш id: {uid}\nБаланс: {balance} <b>Ит</b>."
+    text = (
+        "<b>Главное меню</b>\n\n"
+        f"Ваш id: <code>{uid}</code>"
+        f"\nБаланс: {balance} <b>Ит</b>."
+    )
     if stage == 1:
         text += "\n\n<u>Вы — этапщик</u>\n"
     elif stage == 2:

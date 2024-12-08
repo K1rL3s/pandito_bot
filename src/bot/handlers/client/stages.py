@@ -10,7 +10,7 @@ from aiogram.types import (
 )
 
 from bot.states import StartStage
-from database.database import Database
+from database.repos.database import Database
 
 router = Router(name=__file__)
 
@@ -88,7 +88,7 @@ async def stage_reward_handler(
     )
 
     # Начисляем валюту
-    await db.update_user_balance(participant_id, amount, user["id"])
+    await db.update_balance(participant_id, amount, user["id"])
 
     await callback.message.answer(
         f"Участнику с id {participant_id} начислено {amount} Ит.",

@@ -5,7 +5,7 @@ from aiogram.types import Message
 
 from bot.keyboards.menu import generate_main_menu
 from bot.utils.menu_text import menu_text
-from database.database import Database
+from database.repos.database import Database
 
 router = Router(name=__file__)
 

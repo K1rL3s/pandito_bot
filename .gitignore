@@ -162,5 +162,5 @@ cython_debug/
 # Sqlite-Sqlalchemy-Database files
 *.sqlite*
 
-# Logs
-*logs.*
+# uv
+.python-version

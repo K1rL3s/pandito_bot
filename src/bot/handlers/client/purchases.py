@@ -1,7 +1,7 @@
 from aiogram import F, Router
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 
-from database.database import Database
+from database.repos.database import Database
 
 router = Router(name=__file__)
 

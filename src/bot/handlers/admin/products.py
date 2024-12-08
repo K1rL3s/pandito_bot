@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command, CommandObject, StateFilter
 from aiogram.types import Message
 
-from database.database import Database
+from database.repos.database import Database
 
 router = Router(name=__file__)
 
@@ -34,7 +34,7 @@ async def admin_update_stock(message: Message, command: CommandObject, db: Datab
         product_id, new_stock = int(args[0]), int(args[1])
 
         # Обновляем количество товара
-        updated_stock = await db.update_product_stock(product_id, new_stock)
+        updated_stock = await db.update_stock(product_id, new_stock)
         if updated_stock is not None:
             await message.answer(
                 f"Количество товара с ID {product_id} обновлено до {new_stock}",
@@ -61,7 +61,7 @@ async def admin_change_product_price(
         product_id, new_price = int(args[0]), int(args[1])
 
         # Обновляем цену товара
-        updated_price = await db.change_product_price(product_id, new_price)
+        updated_price = await db.update_price(product_id, new_price)
         if updated_price is not None:
             await message.answer(
                 f"Цена товара с ID {product_id} изменена на {new_price}",
@@ -95,7 +95,7 @@ async def admin_list_products(message: Message, db: Database):
         await message.answer("У вас нет прав для выполнения этой команды.")
         return
 
-    products = await db.get_all_products()
+    products = await db.get_all()
     if products:
         product_list = "\n".join(
             [

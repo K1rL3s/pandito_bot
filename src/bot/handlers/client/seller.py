@@ -10,7 +10,7 @@ from aiogram.types import (
 )
 
 from bot.states import SalesmanCart, SalesmanShop
-from database.database import Database
+from database.repos.database import Database
 
 router = Router(name=__file__)
 
@@ -19,9 +19,7 @@ router = Router(name=__file__)
 async def view_products_salesman_handler(callback: CallbackQuery, db: Database):
     await callback.answer()
     await callback.message.delete()
-    products = (
-        await db.get_available_products()
-    )  # Получаем список товаров из базы данных
+    products = await db.get_available()  # Получаем список товаров из базы данных
     if products:
         product_kb = [
             [
@@ -157,7 +155,7 @@ async def confirm_clear_cart_handler(callback: CallbackQuery, db: Database):
     buyer_id = int(callback.data.split("_")[-1])
 
     # Очищаем корзину участника в базе данных
-    await db.clear_user_purchases(buyer_id)
+    await db.clear_purchases(buyer_id)
 
     c_bk = InlineKeyboardMarkup(
         inline_keyboard=[

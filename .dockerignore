@@ -1,4 +1,3 @@
-# Если кто-то разбирается, напишите мне, есть ли тут что-то лишнее
 **/*.cover
 **/*.log
 **/*.pyc
@@ -31,6 +30,7 @@
 **/pip-delete-this-directory.txt
 **/pip-log.txt
 **/venv
-Dockerfile
-README.md
-docker-compose.yml
+**/.venv
+**/Dockerfile
+**/README.md
+**/docker-compose.yml

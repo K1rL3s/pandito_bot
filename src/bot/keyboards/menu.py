@@ -2,7 +2,7 @@ from typing import Any
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from database.database import Database
+from database.repos.database import Database
 
 
 async def generate_main_menu(user: dict[str, Any], db: Database):

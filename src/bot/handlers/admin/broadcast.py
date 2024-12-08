@@ -2,7 +2,7 @@ from aiogram import Bot, Router
 from aiogram.filters import Command, CommandObject, StateFilter
 from aiogram.types import Message
 
-from database.database import Database
+from database.repos.database import Database
 
 router = Router(name=__file__)
 
@@ -13,7 +13,7 @@ async def admin_broadcast(
     command: CommandObject,
     bot: Bot,
     db: Database,
-):
+) -> None:
     user = await db.get_user(message.from_user.id)
     if not user["is_admin"]:
         await message.delete()

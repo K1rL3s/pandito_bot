@@ -1,35 +1,27 @@
-from asyncpg import Pool
+from sqlalchemy import delete, select, update
+
+from database.models import UserModel
+from database.models.purchases import PurchaseModel
+from database.repos.base import BaseAlchemyRepo
 
 
-class UserDB:
-    def __init__(self, db_pool: Pool) -> None:
-        self.db_pool = db_pool
+class UsersRepo(BaseAlchemyRepo):
+    async def create_user(self, tg_id: int, name: str, is_admin: bool = False) -> int:
+        user = UserModel(id=tg_id, name=name, is_admin=is_admin)
+        self.session.add(user)
+        await self.session.commit()
+        return tg_id
 
-    async def create_user(self, tg: int, name: str, is_admin=False):
-        async with self.db_pool.acquire() as conn:
-            sql = """
-            INSERT INTO users (tg, name, is_admin) 
-            VALUES ($1, $2, $3)
-            RETURNING id;
-            """
-            return await conn.fetchval(sql, tg, name, is_admin)
+    async def get_user(self, tg_id: int) -> UserModel | None:
+        query = select(UserModel).where(UserModel.id == tg_id)
+        return await self.session.scalar(query)
 
-    async def get_user(self, tg: int):
-        async with self.db_pool.acquire() as conn:
-            sql = "SELECT * FROM users WHERE tg = $1;"
-            return await conn.fetchrow(sql, tg)
+    async def get_all_users(self) -> list[UserModel]:
+        query = select(UserModel)
+        return list(await self.session.scalars(query))
 
-    async def get_all_users(self):
-        async with self.db_pool.acquire() as conn:
-            sql = "SELECT * FROM users"
-            return await conn.fetch(sql)
-
-    async def get_user_by_id(self, id: int):
-        async with self.db_pool.acquire() as conn:
-            sql = "SELECT * FROM users WHERE id = $1;"
-            return await conn.fetchrow(sql, id)
-
-    async def update_user_balance(self, id: int, amount: int, invoker: int):
+    # TODO: в сервис
+    async def update_balance(self, tg_id: int, amount: int, invoker: int):
         async with self.db_pool.acquire() as conn:
             invoker_user = await conn.fetchval(
                 "SELECT id FROM users WHERE id = $1",
@@ -60,6 +52,7 @@ class UserDB:
                 )
         return new_balance
 
+    # TODO: в сервис
     async def set_user_balance(self, id: int, amount: int, invoker: int):
         async with self.db_pool.acquire() as conn:
             sql = """
@@ -71,25 +64,18 @@ class UserDB:
             """
             return await conn.fetchval(sql, amount, id, invoker)
 
-    async def change_user_stage(self, id: int, stage: int):
-        async with self.db_pool.acquire() as conn:
-            sql = """
-            UPDATE users 
-            SET stage = $1, updated_at = NOW()
-            WHERE id = $2 RETURNING stage;
-            """
-            return await conn.fetchval(sql, stage, id)
+    async def change_user_stage(self, tg_id: int, stage: int) -> None:
+        query = update(UserModel).where(UserModel.id == tg_id).values(stage=stage)
+        await self.session.execute(query)
+        await self.session.commit()
 
-    async def is_user_admin(self, tg: int):
-        async with self.db_pool.acquire() as conn:
-            sql = """
-            SELECT is_admin 
-            FROM users 
-            WHERE tg = $1;
-            """
-            return await conn.fetchval(sql, tg)
+    async def is_admin(self, tg_id: int) -> bool:
+        user = await self.get_user(tg_id)
+        return user.is_admin if user else False
+        # return user and user.is_admin
 
-    async def get_user_purchases(self, user_id: int):
+    # TODO: в сервис? или в репу покупок
+    async def get_user_purchases(self, tg_id: int):
         async with self.db_pool.acquire() as conn:
             sql = """
             SELECT 
@@ -106,13 +92,15 @@ class UserDB:
             WHERE 
                 pu.user_id = (SELECT id FROM users WHERE id = $1);
             """
-            return await conn.fetch(sql, user_id)
+            return await conn.fetch(sql, tg_id)
 
-    async def clear_user_purchases(self, user_id: int):
-        async with self.db_pool.acquire() as conn:
-            sql = "DELETE FROM purchases WHERE user_id = $1;"
-            await conn.execute(sql, user_id)
+    # TODO: в сервис? или в репу покупок
+    async def clear_purchases(self, tg_id: int):
+        query = delete(PurchaseModel).where(PurchaseModel.user_id == tg_id)
+        await self.session.execute(query)
+        await self.session.commit()
 
+    # TODO: в сервис
     async def transfer_funds(self, sender_id: int, receiver_id: int, amount: int):
         async with self.db_pool.acquire() as conn:
             sql = "SELECT transfer_funds($1, $2, $3);"

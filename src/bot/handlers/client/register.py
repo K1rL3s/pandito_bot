@@ -12,7 +12,7 @@ from aiogram.types import (
 )
 
 from bot.states import Registration
-from database.database import Database
+from database.repos.database import Database
 
 router = Router(name=__file__)
 
