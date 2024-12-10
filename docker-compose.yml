@@ -22,23 +22,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
-  scheduler:
-    <<: *local
-    container_name: pandito-scheduler
-    build:
-      context: .
-      dockerfile: ./src/scheduler/Dockerfile
+    command: "python -m bot"
 
   migrations:
     <<: *local
     container_name: pandito-migrations
+    restart: "no"
     build:
       context: .
-      dockerfile: ./src/migrations/Dockerfile
+      dockerfile: Dockerfile
     depends_on:
       database:
         condition: service_healthy
+    command: "alembic upgrade head"
 
   database:
     image: postgres:16.4-alpine3.20
@@ -52,6 +48,12 @@ services:
     volumes:
       - pandito-volume:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
   redis:
     image: redis:7.2.4-alpine3.19
@@ -64,7 +66,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 5s
     command: "redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD}"
 
 volumes:

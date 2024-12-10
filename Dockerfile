@@ -16,7 +16,12 @@ COPY ./pyproject.toml ./pyproject.toml
 COPY ./uv.lock ./uv.lock
 
 # я панк мне по кайфу
-COPY ./src ./
+COPY ./alembic.ini ./alembic.ini
+COPY ./bot ./bot
+COPY ./database ./database
+COPY ./di ./di
+COPY ./migrations ./migrations
+
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
@@ -29,5 +34,3 @@ COPY --from=builder --chown=app:app /app /app
 ENV PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
-
-CMD ["python", "-m", "bot"]
