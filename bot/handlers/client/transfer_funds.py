@@ -13,9 +13,9 @@ from aiogram.types import (
 from dishka import FromDishka
 
 from bot.states import TransferFunds
+from core.services.users import UsersService
 from database.models import UserModel
 from database.repos.users import UsersRepo
-from database.services.users import UsersService
 
 router = Router(name=__file__)
 
@@ -44,7 +44,7 @@ async def transfer_funds_id_handler(
         await message.answer("Неверный формат!")
         return
 
-    receiver = await users_repo.get_one(int(receiver_id))
+    receiver = await users_repo.get_by_id(int(receiver_id))
     if not receiver:
         text = f"Пользователя с id {receiver_id} не существует!"
         keyboard = InlineKeyboardMarkup(

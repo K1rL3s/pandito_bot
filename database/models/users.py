@@ -1,9 +1,11 @@
 import datetime
 
 from sqlalchemy import BigInteger, Boolean, DateTime, Integer, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.models.base import BaseAlchemyModel, utc_now
+from database.models.logs import LogsModel
+from database.models.purchases import PurchaseModel
 
 
 class UserModel(BaseAlchemyModel):
@@ -31,4 +33,13 @@ class UserModel(BaseAlchemyModel):
         onupdate=utc_now,
         server_default=func.now(),
         server_onupdate=func.now(),
+    )
+
+    purchases: Mapped[list[PurchaseModel]] = relationship(
+        "PurchaseModel",
+        cascade="delete-orphan, delete",
+    )
+    logs: Mapped[list[LogsModel]] = relationship(
+        "LogsModel",
+        cascade="delete-orphan, delete",
     )

@@ -3,6 +3,7 @@ from aiogram.filters import Command, CommandObject, StateFilter
 from aiogram.types import Message
 from dishka import FromDishka
 
+from core.services.users import UsersService
 from database.repos.users import UsersRepo
 
 router = Router(name=__file__)
@@ -12,12 +13,12 @@ router = Router(name=__file__)
 async def admin_change_stage(
     message: Message,
     command: CommandObject,
-    users_repo: FromDishka[UsersRepo],
+    users_service: FromDishka[UsersService],
 ) -> None:
     if command.args and len(command.args.split()) == 2:
         args = command.args.split()
         user_id, stage = int(args[0]), int(args[1])
-        await users_repo.change_stage(user_id, stage)
+        await users_service.change_stage(user_id, stage)
         await message.answer("Успех!")
     else:
         await message.answer("Формат: /stage <user_id> <stage>", parse_mode=None)

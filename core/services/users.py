@@ -1,3 +1,10 @@
+from core.exceptions import (
+    InvalidValue,
+    InvalidValueAfterUpdate,
+    NotAdmin,
+    NotEnoughMoney,
+    UserNotFound,
+)
 from database.repos.logs import LogsRepo
 from database.repos.users import UsersRepo
 
@@ -17,16 +24,20 @@ class UsersService:
         master_id: int,
         amount: int,
     ) -> int:
-        user = await self.users_repo.get_one(slave_id)
+        user = await self.users_repo.get_by_id(slave_id)
         if user is None:
-            raise Exception  # TODO: сделать ошибку
+            raise UserNotFound(slave_id)
 
-        admin = await self.users_repo.get_one(master_id)
+        admin = await self.users_repo.get_by_id(master_id)
         if admin is None:
-            raise Exception  # TODO: сделать ошибку
+            raise UserNotFound(master_id)
+        if not admin.is_admin:
+            raise NotAdmin(master_id)
 
         if user.balance + amount < 0:  # если отнимаем
-            raise Exception  # TODO: сделать ошибку
+            raise InvalidValueAfterUpdate(
+                f"Баланс станет отрицательным. Текущий: {user.balance}",
+            )
 
         new_balance = user.balance + amount
         await self.users_repo.set_balance(slave_id, new_balance)
@@ -45,15 +56,17 @@ class UsersService:
         new_balance: int,
     ) -> int:
         if new_balance < 0:
-            raise Exception  # TODO: сделать ошибку
+            raise InvalidValue("Новый баланс не может быть отрицательным")
 
-        user = await self.users_repo.get_one(slave_id)
+        user = await self.users_repo.get_by_id(slave_id)
         if user is None:
-            raise Exception  # TODO: сделать ошибку
+            raise UserNotFound(slave_id)
 
-        admin = await self.users_repo.get_one(master_id)
+        admin = await self.users_repo.get_by_id(master_id)
         if admin is None:
-            raise Exception  # TODO: сделать ошибку
+            raise UserNotFound(master_id)
+        if not admin.is_admin:
+            raise NotAdmin(master_id)
 
         await self.users_repo.set_balance(slave_id, new_balance)
 
@@ -75,18 +88,18 @@ class UsersService:
         amount: int,
     ) -> int:
         if amount <= 0:
-            raise Exception  # TODO сделать ошибку
+            raise InvalidValue("Нельзя передать 0 или меньше денег")
 
-        sender = await self.users_repo.get_one(sender_id)
+        sender = await self.users_repo.get_by_id(sender_id)
         if sender is None:
-            raise Exception  # TODO сделать ошибку
-
-        receiver = await self.users_repo.get_one(receiver_id)
-        if receiver is None:
-            raise Exception  # TODO сделать ошибку
+            raise UserNotFound(sender_id)
 
         if sender.balance < amount:
-            raise Exception  # TODO сделать ошибку
+            raise NotEnoughMoney(sender.balance, amount)
+
+        receiver = await self.users_repo.get_by_id(receiver_id)
+        if receiver is None:
+            raise UserNotFound(receiver_id)
 
         new_sender_balance = sender.balance - amount
         await self.users_repo.set_balance(sender_id, new_sender_balance)
@@ -104,3 +117,10 @@ class UsersService:
         )
 
         return new_sender_balance
+
+    async def change_stage(self, tg_id: int, stage: int) -> None:
+        user = await self.users_repo.get_by_id(tg_id)
+        if not user:
+            raise UserNotFound(tg_id)
+
+        await self.users_repo.change_stage(tg_id, stage)

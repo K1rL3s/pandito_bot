@@ -10,7 +10,10 @@ class LogsModel(BaseAlchemyModel):
     __tablename__ = "logs"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
     description: Mapped[str] = mapped_column(String(4096), nullable=False)
 
     created_at: Mapped[datetime.datetime] = mapped_column(

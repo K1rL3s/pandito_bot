@@ -1,3 +1,10 @@
+from core.exceptions import (
+    InvalidValue,
+    NotEnoughMoney,
+    NotEnoughStock,
+    ProductNotFound,
+    UserNotFound,
+)
 from database.repos.logs import LogsRepo
 from database.repos.products import ProductsRepo
 from database.repos.purchases import PurchasesRepo
@@ -17,22 +24,21 @@ class ProductsService:
         self.purchases_repo = purchases_repo
         self.logs_repo = logs_repo
 
-    # TODO: в сервис
     async def buy_product(self, user_id: int, product_id: int, quantity: int) -> int:
         product = await self.products_repo.get_one(product_id)
         if product is None:
-            raise Exception  # TODO: сделать ошибку
+            raise ProductNotFound(product_id)
 
         if product.stock < quantity:
-            raise Exception  # TODO: сделать ошибку
+            raise NotEnoughStock(product.stock, quantity)
 
-        user = await self.users_repo.get_one(user_id)
+        user = await self.users_repo.get_by_id(user_id)
         if user is None:
-            raise Exception  # TODO: сделать ошибку
+            raise UserNotFound(user_id)
 
         total_price = product.price * quantity
         if user.balance < total_price:
-            raise Exception  # TODO: сделать ошибку
+            raise NotEnoughMoney(user.balance, total_price)
 
         new_balance = user.balance - total_price
         await self.users_repo.set_balance(user.id, new_balance)
@@ -51,14 +57,17 @@ class ProductsService:
 
     async def decrement_stock(self, product_id: int, quantity: int) -> int:
         if quantity <= 0:
-            raise Exception  # TODO: сделать ошибку
+            raise InvalidValue(
+                "Нельзя уменьшить кол-во товара на отрицательное значение "
+                f'"{quantity}"',
+            )
 
         product = await self.products_repo.get_one(product_id)
         if product is None:
-            raise Exception  # TODO: сделать ошибку
+            raise ProductNotFound(product_id)
 
         if product.stock < quantity:
-            raise Exception  # TODO: сделать ошибку
+            raise NotEnoughStock(product.stock, quantity)
 
         new_stock = product.stock - quantity
         await self.products_repo.set_stock(product_id, new_stock)
@@ -67,18 +76,20 @@ class ProductsService:
 
     async def set_stock(self, product_id: int, new_stock: int) -> int:
         if new_stock < 0:
-            raise Exception  # TODO сделать ошибку
+            raise InvalidValue("Кол-во товара не может быть отрицательным")
+
         product = await self.products_repo.get_one(product_id)
         if product is None:
-            raise Exception  # TODO сделать ошибку
+            raise ProductNotFound(product_id)
 
         return await self.products_repo.set_stock(product_id, new_stock)
 
     async def set_price(self, product_id: int, new_price: int) -> int:
         if new_price <= 0:
-            raise Exception
+            raise InvalidValue("Цена не может быть отрицательной")
+
         product = await self.products_repo.get_one(product_id)
         if product is None:
-            raise Exception  # TODO сделать ошибку
+            raise ProductNotFound(product_id)
 
         return await self.products_repo.set_price(product_id, new_price)

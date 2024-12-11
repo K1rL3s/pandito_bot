@@ -26,5 +26,5 @@ class DBProvider(Provider):
         self,
         sessionmaker: async_sessionmaker[AsyncSession],
     ) -> AsyncIterable[AsyncSession]:
-        async with sessionmaker() as session:
+        async with sessionmaker.begin() as session:
             yield session

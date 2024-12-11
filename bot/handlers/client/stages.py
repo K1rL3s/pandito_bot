@@ -11,9 +11,9 @@ from aiogram.types import (
 from dishka import FromDishka
 
 from bot.states import StartStage
+from core.services import UsersService
 from database.models import UserModel
 from database.repos.users import UsersRepo
-from database.services.users import UsersService
 
 router = Router(name=__file__)
 
@@ -43,7 +43,7 @@ async def stage_participant_id_handler(
         return
 
     # Проверяем, существует ли пользователь с таким id
-    slave = await users_repo.get_one(int(participant_id))
+    slave = await users_repo.get_by_id(int(participant_id))
     if not slave:
         await message.answer("Такого участника не существует.")
         return

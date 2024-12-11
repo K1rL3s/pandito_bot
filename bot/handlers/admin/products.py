@@ -3,8 +3,8 @@ from aiogram.filters import Command, CommandObject, StateFilter
 from aiogram.types import Message
 from dishka import FromDishka
 
+from core.services.products import ProductsService
 from database.repos.products import ProductsRepo
-from database.services.products import ProductsService
 
 router = Router(name=__file__)
 

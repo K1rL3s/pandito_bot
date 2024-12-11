@@ -1,47 +1,42 @@
-# event-shop
+# Pandito Бот
 
-## How to get started
+## Запуск
 
-1. Install docker, docker compose, make
+1. Склонировать репозиторий и перейти в него:
 
-2. Create .env file in repo dir with TOKEN (telegram bot token) and OWNER (user with admin powers id)
+    ```
+    git clone https://github.com/whatochka/pandito_bot
+    cd ./pandito_bot
+    ```
 
-```bash
-TOKEN=123456:ABCDEF
-OWNER=1234567890
-```
+2. Создать и заполнить файл `.env` в корневой папке (пример: `.env.example`)
+    ```
+    BOT_TOKEN=Token
+    OWNER_ID=123456789
+    DB_URL=postgresql+psycopg://user:password@address:port/name
+    DB_NAME=name
+    DB_USER=user
+    DB_PASSWORD=password
+    REDIS_PASSWORD=password
+    ```
+3. Иметь установленный [Docker Engine](https://docs.docker.com/engine/) и [docker compose v2](https://docs.docker.com/compose/releases/migrate/)
+4. Собрать и запустить:
 
-1. Start all
+    ```
+    docker compose up -d --build
+    ```
 
-```bash
-make up
-```
 
-## Other make commands
+## Команды
 
-Stop all
-
-```bash
-make down
-```
-
-Get logs
-
-```bash
-make logs
-```
-
-Delete all data
-
-```bash
-make flush
-```
-
----
-
-how to use monitor (bash):
-
-export MONITOR_TOKEN=ABCDEF:123456
-export MONITOR_CHAT=1234567890
-pip install aiogram
-python3 monitor/main.py
+`/menu` `/profile` `/balance`
+`/broadcast <message>`
+`/delete_product <product_id>`
+`/list_products`
+`/list_users`
+`/logs <user_id>`
+`/money <user_id> <amount>` - прибавляет amount коинов
+`/price <product_id> <new_price>`
+`/product <name> <price> <stock> <description>`
+`/stage <user_id> <stage>`
+`/stock <product_id> <new_stock>`

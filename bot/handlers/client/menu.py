@@ -20,7 +20,7 @@ async def menu_handler(
 ) -> None:
     await message.answer_sticker(sticker=PANDA_WINK)
 
-    user = await users_repo.get_one(message.from_user.id)
+    user = await users_repo.get_by_id(message.from_user.id)
     text = menu_text(user.id, user.balance, user.stage, user.is_admin)
     keyboard = await generate_main_menu(user, users_repo)
     await message.answer(text=text, reply_markup=keyboard)

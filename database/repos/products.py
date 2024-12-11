@@ -19,7 +19,7 @@ class ProductsRepo(BaseAlchemyRepo):
             stock=stock,
         )
         self.session.add(product)
-        await self.session.commit()
+        await self.session.flush()
         return product  # TODO проверить что айди есть
 
     async def get_one(self, product_id: int) -> ProductModel | None:
@@ -41,7 +41,7 @@ class ProductsRepo(BaseAlchemyRepo):
             .values(stock=new_stock)
         )
         await self.session.execute(query)
-        await self.session.commit()
+        await self.session.flush()
         return new_stock
 
     async def set_price(self, product_id: int, new_price: int) -> int:
@@ -51,10 +51,10 @@ class ProductsRepo(BaseAlchemyRepo):
             .values(price=new_price)
         )
         await self.session.execute(query)
-        await self.session.commit()
+        await self.session.flush()
         return new_price
 
     async def delete(self, product_id: int) -> None:
         query = delete(ProductModel).where(ProductModel.id == product_id)
         await self.session.execute(query)
-        await self.session.commit()
+        await self.session.flush()

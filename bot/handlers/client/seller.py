@@ -12,10 +12,10 @@ from dishka import FromDishka
 
 from bot.keyboards.products import products_seller_keyboard
 from bot.states import SalesmanCart, SalesmanShop
+from core.services.products import ProductsService
 from database.repos.products import ProductsRepo
 from database.repos.purchases import PurchasesRepo
 from database.repos.users import UsersRepo
-from database.services.products import ProductsService
 
 router = Router(name=__file__)
 
@@ -63,7 +63,7 @@ async def salesman_buyer_id_handler(
         await message.answer("Неверный формат id! Попробуйте еще раз.")
         return
 
-    buyer = await users_repo.get_one(int(buyer_id))
+    buyer = await users_repo.get_by_id(int(buyer_id))
     if not buyer:
         await message.answer("Такого покупателя не существует.")
         return
@@ -122,7 +122,7 @@ async def show_cart_handler(
         await message.answer("Неверный формат id! Попробуйте еще раз.")
         return
 
-    slave = await users_repo.get_one(int(buyer_id))
+    slave = await users_repo.get_by_id(int(buyer_id))
     if not slave:
         await message.answer("Такого участника не существует.")
         return

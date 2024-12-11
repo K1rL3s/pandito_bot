@@ -14,7 +14,7 @@ class UsersRepo(BaseAlchemyRepo):
     ) -> UserModel:
         user = UserModel(id=tg_id, name=name, is_admin=is_admin, balance=balance)
         self.session.add(user)
-        await self.session.commit()
+        await self.session.flush()
         return user
 
     async def update(self, tg_id: int, name: str, is_admin: bool) -> None:
@@ -24,9 +24,9 @@ class UsersRepo(BaseAlchemyRepo):
             .values(name=name, is_admin=is_admin)
         )
         await self.session.execute(query)
-        await self.session.commit()
+        await self.session.flush()
 
-    async def get_one(self, tg_id: int) -> UserModel | None:
+    async def get_by_id(self, tg_id: int) -> UserModel | None:
         query = select(UserModel).where(UserModel.id == tg_id)
         return await self.session.scalar(query)
 
@@ -39,14 +39,14 @@ class UsersRepo(BaseAlchemyRepo):
             update(UserModel).where(UserModel.id == tg_id).values(balance=new_balance)
         )
         await self.session.execute(query)
-        await self.session.commit()
+        await self.session.flush()
 
     async def change_stage(self, tg_id: int, stage: int) -> None:
         query = update(UserModel).where(UserModel.id == tg_id).values(stage=stage)
         await self.session.execute(query)
-        await self.session.commit()
+        await self.session.flush()
 
     async def is_admin(self, tg_id: int) -> bool:
-        user = await self.get_one(tg_id)
+        user = await self.get_by_id(tg_id)
         return user.is_admin if user else False
         # return user and user.is_admin

@@ -8,9 +8,9 @@ from bot.keyboards.products import (
     products_keyboard,
     view_shop_keyboard,
 )
+from core.services.products import ProductsService
 from database.models import UserModel
 from database.repos.products import ProductsRepo
-from database.services.products import ProductsService
 
 router = Router(name=__file__)
 

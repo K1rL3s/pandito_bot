@@ -3,7 +3,7 @@ from aiogram.filters import Command, CommandObject, StateFilter
 from aiogram.types import Message
 from dishka import FromDishka
 
-from database.services.users import UsersService
+from core.services.users import UsersService
 
 router = Router(name=__file__)
 

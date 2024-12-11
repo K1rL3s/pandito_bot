@@ -20,7 +20,7 @@ class UserDbContextMiddleware(BaseMiddleware):
         if from_user is not None:
             container: AsyncContainer = data["dishka_container"]
             users_repo = await container.get(UsersRepo)
-            db_user = await users_repo.get_one(from_user.id)
+            db_user = await users_repo.get_by_id(from_user.id)
             if db_user is None:
                 db_user = await users_repo.create(
                     tg_id=from_user.id,

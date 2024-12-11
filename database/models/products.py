@@ -1,9 +1,10 @@
 import datetime
 
 from sqlalchemy import DateTime, Integer, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.models.base import BaseAlchemyModel, utc_now
+from database.models.purchases import PurchaseModel
 
 
 class ProductModel(BaseAlchemyModel):
@@ -28,4 +29,9 @@ class ProductModel(BaseAlchemyModel):
         onupdate=utc_now,
         server_default=func.now(),
         server_onupdate=func.now(),
+    )
+
+    purchases: Mapped[list[PurchaseModel]] = relationship(
+        "PurchaseModel",
+        cascade="delete-orphan, delete",
     )

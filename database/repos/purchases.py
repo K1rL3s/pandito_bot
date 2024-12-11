@@ -12,7 +12,7 @@ class PurchasesRepo(BaseAlchemyRepo):
             quantity=quantity,
         )
         self.session.add(purchase)
-        await self.session.commit()
+        await self.session.flush()
         return purchase  # TODO проверить что появился айдишник
 
     async def get_user_purchases(
@@ -24,9 +24,9 @@ class PurchasesRepo(BaseAlchemyRepo):
             .join(PurchaseModel, PurchaseModel.product_id == ProductModel.id)
             .where(PurchaseModel.user_id == tg_id)
         )
-        return list(await self.session.scalars(query))  # TODO проверить что тут
+        return list(await self.session.execute(query))  # TODO проверить что тут
 
     async def clear_purchases(self, tg_id: int) -> None:
         query = delete(PurchaseModel).where(PurchaseModel.user_id == tg_id)
         await self.session.execute(query)
-        await self.session.commit()
+        await self.session.flush()
