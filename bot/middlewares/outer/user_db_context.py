@@ -28,6 +28,9 @@ class UserDbContextMiddleware(BaseMiddleware):
                     balance=0,
                     is_admin=False,
                 )
+            elif not db_user.is_active:
+                await users_repo.change_active(db_user.id, True)
+
             data["user"] = db_user
 
         return await handler(event, data)

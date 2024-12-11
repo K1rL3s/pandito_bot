@@ -34,6 +34,14 @@ class UsersRepo(BaseAlchemyRepo):
         query = select(UserModel).order_by(UserModel.created_at.desc())
         return list(await self.session.scalars(query))
 
+    async def get_active(self) -> list[UserModel]:
+        query = (
+            select(UserModel)
+            .where(UserModel.is_active == True)
+            .order_by(UserModel.created_at.asc())
+        )
+        return list(await self.session.scalars(query))
+
     async def set_balance(self, tg_id: int, new_balance: int) -> None:
         query = (
             update(UserModel).where(UserModel.id == tg_id).values(balance=new_balance)
@@ -50,3 +58,10 @@ class UsersRepo(BaseAlchemyRepo):
         user = await self.get_by_id(tg_id)
         return user.is_admin if user else False
         # return user and user.is_admin
+
+    async def change_active(self, tg_id: int, is_active: bool) -> None:
+        query = (
+            update(UserModel).where(UserModel.id == tg_id).values(is_active=is_active)
+        )
+        await self.session.execute(query)
+        await self.session.flush()

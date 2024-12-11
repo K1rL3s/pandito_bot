@@ -11,7 +11,7 @@ from aiogram.types import (
 from dishka import FromDishka
 
 from bot.states import StartStage
-from core.services import UsersService
+from core.services.users import UsersService
 from database.models import UserModel
 from database.repos.users import UsersRepo
 

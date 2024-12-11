@@ -3,7 +3,7 @@ from aiogram.filters import Command, CommandObject, StateFilter
 from aiogram.types import Message
 from dishka import FromDishka
 
-from database.repos.users import UsersRepo
+from core.services.broadcast import Broadcaster
 
 router = Router(name=__file__)
 
@@ -13,13 +13,11 @@ async def admin_broadcast(
     message: Message,
     command: CommandObject,
     bot: Bot,
-    users_repo: FromDishka[UsersRepo],
+    broadcaster: FromDishka[Broadcaster],
 ) -> None:
     if command.args:
         text = command.args
-        users = await users_repo.get_all()
-        for user in users:
-            await bot.send_message(user.id, text)  # TODO нормальная рассылка
-        await message.answer("Успешный успех")
+        result = await broadcaster.broadcast(bot, text)
+        await message.answer(f"Успешный успех, ok={result.ok} fail={result.fail}")
     else:
         await message.answer("Формат: /broadcast <message>", parse_mode=None)

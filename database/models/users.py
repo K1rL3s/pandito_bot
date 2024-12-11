@@ -16,6 +16,7 @@ class UserModel(BaseAlchemyModel):
     balance: Mapped[int] = mapped_column(Integer, nullable=False)
     stage: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     can_pay: Mapped[bool] = mapped_column(Boolean, default=False)
     can_clear_purchases: Mapped[bool] = mapped_column(Boolean, default=False)
