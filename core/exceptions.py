@@ -9,6 +9,15 @@ class ServiceException(Exception):
         return f"{type(self).__name__}('{self}')"
 
 
+class EntityAlreadyExists(ServiceException):
+    pass
+
+
+class SecretAlreadyExists(EntityAlreadyExists):
+    def __init__(self, phrase: str) -> None:
+        self.message = f'Секрет с фразой "{phrase}" уже существует'
+
+
 class EntityNotFound(ServiceException):
     pass
 

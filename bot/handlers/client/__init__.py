@@ -5,6 +5,7 @@ from .menu import router as menu_router
 from .products import router as product_router
 from .purchases import router as purchases_router
 from .register import router as register_router
+from .secret import router as secret_router
 from .seller import router as seller_router
 from .stages import router as stages_router
 from .start import router as start_router
@@ -18,6 +19,7 @@ def include_client_routers(dp: Dispatcher) -> None:
         product_router,
         purchases_router,
         register_router,
+        secret_router,
         seller_router,
         stages_router,
         start_router,

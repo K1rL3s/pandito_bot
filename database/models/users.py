@@ -1,14 +1,13 @@
-import datetime
-
-from sqlalchemy import BigInteger, Boolean, DateTime, Integer, String, func
+from sqlalchemy import BigInteger, Boolean, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.models.base import BaseAlchemyModel, utc_now
+from database.models._mixins import CreatedAtMixin, UpdatedAtMixin
+from database.models.base import BaseAlchemyModel
 from database.models.logs import LogsModel
 from database.models.purchases import PurchaseModel
 
 
-class UserModel(BaseAlchemyModel):
+class UserModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
@@ -21,26 +20,11 @@ class UserModel(BaseAlchemyModel):
     can_pay: Mapped[bool] = mapped_column(Boolean, default=False)
     can_clear_purchases: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime,
-        nullable=False,
-        default=utc_now,
-        server_default=func.now(),
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime,
-        nullable=False,
-        default=utc_now,
-        onupdate=utc_now,
-        server_default=func.now(),
-        server_onupdate=func.now(),
-    )
-
     purchases: Mapped[list[PurchaseModel]] = relationship(
         "PurchaseModel",
-        cascade="delete-orphan, delete",
+        cascade="delete, delete-orphan",
     )
     logs: Mapped[list[LogsModel]] = relationship(
         "LogsModel",
-        cascade="delete-orphan, delete",
+        cascade="delete, delete-orphan",
     )

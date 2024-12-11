@@ -1,12 +1,11 @@
-import datetime
-
-from sqlalchemy import DateTime, ForeignKey, Integer, func
+from sqlalchemy import ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database.models.base import BaseAlchemyModel, utc_now
+from database.models._mixins import CreatedAtMixin, UpdatedAtMixin
+from database.models.base import BaseAlchemyModel
 
 
-class PurchaseModel(BaseAlchemyModel):
+class PurchaseModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     __tablename__ = "purchases"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -19,18 +18,3 @@ class PurchaseModel(BaseAlchemyModel):
         nullable=False,
     )
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    created_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime,
-        nullable=False,
-        default=utc_now,
-        server_default=func.now(),
-    )
-    updated_at: Mapped[datetime.datetime] = mapped_column(
-        DateTime,
-        nullable=False,
-        default=utc_now,
-        onupdate=utc_now,
-        server_default=func.now(),
-        server_onupdate=func.now(),
-    )

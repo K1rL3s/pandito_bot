@@ -30,7 +30,7 @@ async def all_exceptions_handler(
 ) -> None:
     text = (
         "❌😵 Произошла ошибка... "
-        "Попробуйте ещё раз и/или напишите нам: @K1rles @whatochka"
+        "Попробуйте ещё раз и/или напишите нам: @K1rLes @whatochka"
     )
     await bot.send_message(chat_id=event_chat.id, text=text)
 

@@ -5,6 +5,7 @@ from .broadcast import router as broadcast_router
 from .logs import router as logs_router
 from .money import router as money_router
 from .products import router as products_routes
+from .secret import router as secret_router
 from .users import router as users_router
 
 
@@ -20,6 +21,7 @@ def include_admin_routers(dp: Dispatcher) -> None:
         money_router,
         products_routes,
         users_router,
+        secret_router,
     )
 
     dp.include_router(admin_router)
