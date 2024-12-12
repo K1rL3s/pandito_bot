@@ -44,3 +44,4 @@
 `/list_secrets`
 `/delete_secret <id>`
 `/id` - куркод с диплинком на айди
+`/help`

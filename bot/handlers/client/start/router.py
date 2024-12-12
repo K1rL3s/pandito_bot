@@ -1,12 +1,23 @@
-from aiogram import Router
+from aiogram import F, Router
+from aiogram.filters import CommandStart, MagicData
+from aiogram.types import Message
+from aiogram_dialog import DialogManager, ShowMode, StartMode
 
-from .register import router as register_router
-from .start import router as start_router
+from bot.handlers.client.start.states import StartStates
+from bot.stickers import PANDA_HELLO
+
+from .dialogs import start_dialog
 
 router = Router(name=__file__)
 
+router.include_routers(start_dialog)
 
-router.include_routers(
-    start_router,
-    register_router,
-)
+
+@router.message(CommandStart(), ~MagicData(F.user.name))
+async def start_handler(message: Message, dialog_manager: DialogManager) -> None:
+    await message.answer_sticker(sticker=PANDA_HELLO)
+    await dialog_manager.start(
+        StartStates.name,
+        mode=StartMode.RESET_STACK,
+        show_mode=ShowMode.SEND,
+    )

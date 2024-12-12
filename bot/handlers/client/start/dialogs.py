@@ -1,0 +1,53 @@
+from aiogram import F
+from aiogram.enums import ContentType
+from aiogram_dialog import Dialog, Window
+from aiogram_dialog.widgets.input import MessageInput
+from aiogram_dialog.widgets.kbd import Button
+from aiogram_dialog.widgets.text import Const, Format
+
+from bot.handlers.client.start.getters import full_name_getter
+from bot.handlers.client.start.on_actions import (
+    name_handler,
+    register_confirm,
+    register_disconfirm,
+)
+from bot.handlers.client.start.states import StartStates
+
+START_TEXT = """
+Привет! 👋
+
+Меня зовут <b>Пандито!</b> 🐼
+
+Я буду хранить твои <u>Иткоины</u> и оповещать тебя о всех важных событиях, приуроченных Дню рождения Института информационных технологий!
+""".strip()  # noqa
+
+BAD_FORMAT = "Неверный формат!"
+
+REGISTER_TEXT = """
+Чтобы зарегистрироваться, введи свою <b>фамилию</b> и <b>имя</b>
+<i>(Пример: Иванов Ваня)</i>
+""".strip()
+
+
+welcome_window = Window(
+    Const(
+        START_TEXT,
+        when=~F["dialog_data"]["retry"] & ~F["start_data"]["retry"],
+    ),
+    Const(BAD_FORMAT, when=F["dialog_data"]["retry"]),
+    Const("\n" + REGISTER_TEXT),
+    MessageInput(name_handler, content_types=[ContentType.TEXT]),
+    state=StartStates.name,
+)
+confirm_name_window = Window(
+    Format("Проверьте введенные данные!\n\nВас зовут <b>{full_name}</b>?"),
+    Button(Const("Подтвердить"), id="yes", on_click=register_confirm),
+    Button(Const("Отмена"), id="no", on_click=register_disconfirm),
+    state=StartStates.confirm,
+    getter=full_name_getter,
+)
+
+start_dialog = Dialog(
+    welcome_window,
+    confirm_name_window,
+)
