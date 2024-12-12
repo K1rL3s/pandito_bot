@@ -4,6 +4,7 @@ from .cancel import router as cancel_router
 from .menu import router as menu_router
 from .products import router as product_router
 from .purchases import router as purchases_router
+from .qrcodes import router as qrcodes_router
 from .register import router as register_router
 from .secret import router as secret_router
 from .seller import router as seller_router
@@ -24,4 +25,5 @@ def include_client_routers(dp: Dispatcher) -> None:
         stages_router,
         start_router,
         transfer_funds_router,
+        qrcodes_router,
     )

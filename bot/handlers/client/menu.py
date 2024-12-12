@@ -12,7 +12,7 @@ from database.repos.users import UsersRepo
 router = Router(name=__file__)
 
 
-@router.message(Command("menu", "profile", "balance"))
+@router.message(Command("menu", "profile", "balance", "me"))
 async def menu_handler(
     message: Message,
     state: FSMContext,

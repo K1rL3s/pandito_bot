@@ -29,7 +29,7 @@
 
 ## Команды
 
-`/menu` `/profile` `/balance`
+`/menu` `/profile` `/balance` `/me`
 `/broadcast <message>`
 `/delete_product <product_id>`
 `/list_products`
@@ -40,3 +40,7 @@
 `/product <name> <price> <stock> <description>`
 `/stage <user_id> <stage>`
 `/stock <product_id> <new_stock>`
+`/secret <phrase>`
+`/list_secrets`
+`/delete_secret <id>`
+`/id` - куркод с диплинком на айди

@@ -65,3 +65,12 @@ class UsersRepo(BaseAlchemyRepo):
         )
         await self.session.execute(query)
         await self.session.flush()
+
+    async def set_qrcode_image_id(self, tg_id: int, qrcode_image_id: str) -> None:
+        query = (
+            update(UserModel)
+            .where(UserModel.id == tg_id)
+            .values(qrcode_image_id=qrcode_image_id)
+        )
+        await self.session.execute(query)
+        await self.session.flush()

@@ -8,7 +8,10 @@ from database.repos.users import UsersRepo
 
 class SecretsService:
     def __init__(
-        self, secrets_repo: SecretsRepo, users_repo: UsersRepo, logs_repo: LogsRepo,
+        self,
+        secrets_repo: SecretsRepo,
+        users_repo: UsersRepo,
+        logs_repo: LogsRepo,
     ) -> None:
         self.secrets_repo = secrets_repo
         self.users_repo = users_repo
@@ -45,7 +48,7 @@ class SecretsService:
 
         try:
             secret = await self.secrets_repo.create(phrase, reward)
-        except IntegrityError:  # TODO убрать отсюда импорт ошибки алхимии?
-            raise SecretAlreadyExists(phrase)
+        except IntegrityError as e:  # TODO убрать отсюда импорт ошибки алхимии?
+            raise SecretAlreadyExists(phrase) from e
 
         return secret.id

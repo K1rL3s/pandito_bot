@@ -20,6 +20,12 @@ class UserModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     can_pay: Mapped[bool] = mapped_column(Boolean, default=False)
     can_clear_purchases: Mapped[bool] = mapped_column(Boolean, default=False)
 
+    qrcode_image_id: Mapped[str] = mapped_column(
+        String(128),
+        nullable=True,
+        unique=True,
+    )
+
     purchases: Mapped[list[PurchaseModel]] = relationship(
         "PurchaseModel",
         cascade="delete, delete-orphan",

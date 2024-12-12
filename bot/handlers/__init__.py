@@ -7,8 +7,8 @@ from .unknown_message import router as unknown_message_router
 
 
 def include_routers(dp: Dispatcher) -> None:
-    include_client_routers(dp)
     include_admin_routers(dp)
+    include_client_routers(dp)
     dp.include_routers(
         unknown_message_router,
         exceptions_router,
