@@ -1,16 +1,15 @@
 from aiogram import Dispatcher
 
 from .cancel import router as cancel_router
-from .menu import router as menu_router
-from .products import router as product_router
-from .purchases import router as purchases_router
-from .qrcodes import router as qrcodes_router
-from .register import router as register_router
-from .secret import router as secret_router
-from .seller import router as seller_router
-from .stages import router as stages_router
-from .start import router as start_router
-from .transfer_funds import router as transfer_funds_router
+from .menu.router import router as menu_router
+from .products.router import router as product_router
+from .purchases.router import router as purchases_router
+from .qrcodes.router import router as qrcodes_router
+from .secret.router import router as secret_router
+from .seller.router import router as seller_router
+from .stages.router import router as stages_router
+from .start.router import router as start_router
+from .transfer_funds.router import router as transfer_funds_router
 
 
 def include_client_routers(dp: Dispatcher) -> None:
@@ -19,11 +18,10 @@ def include_client_routers(dp: Dispatcher) -> None:
         menu_router,
         product_router,
         purchases_router,
-        register_router,
+        qrcodes_router,
         secret_router,
         seller_router,
         stages_router,
         start_router,
         transfer_funds_router,
-        qrcodes_router,
     )

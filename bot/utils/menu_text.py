@@ -1,7 +1,7 @@
 def menu_text(uid: int, balance: int, stage: int, is_admin: bool = False) -> str:
     text = (
         "<b>Главное меню</b>\n\n"
-        f"Ваш id: <code>{uid}</code>"
+        f"Ваш ID: <code>{uid}</code> (/id)"
         f"\nБаланс: {balance} <b>Ит</b>."
     )
     if stage == 1:

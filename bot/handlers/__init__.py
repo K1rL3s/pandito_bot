@@ -1,4 +1,5 @@
 from aiogram import Dispatcher
+from aiogram_dialog import setup_dialogs
 
 from .admin import include_admin_routers
 from .client import include_client_routers
@@ -13,3 +14,5 @@ def include_routers(dp: Dispatcher) -> None:
         unknown_message_router,
         exceptions_router,
     )
+
+    setup_dialogs(dp)

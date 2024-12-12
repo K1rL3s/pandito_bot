@@ -32,7 +32,7 @@ class Broadcaster:  # TODO ускорить
             except (TelegramNotFound, TelegramForbiddenError):
                 await self.users_repo.change_active(user.id, False)
                 fail += 1
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logging.error(f"Ошибка во время рассылки: {type(e).__name__}('{e}')")
                 fail += 1
 

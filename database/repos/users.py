@@ -37,7 +37,7 @@ class UsersRepo(BaseAlchemyRepo):
     async def get_active(self) -> list[UserModel]:
         query = (
             select(UserModel)
-            .where(UserModel.is_active == True)
+            .where(UserModel.is_active == True)  # noqa: E712
             .order_by(UserModel.created_at.asc())
         )
         return list(await self.session.scalars(query))
