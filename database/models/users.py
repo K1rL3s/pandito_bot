@@ -1,6 +1,8 @@
 from sqlalchemy import BigInteger, Boolean, Integer, String
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from core.enums import RightsRole
 from database.models._mixins import CreatedAtMixin, UpdatedAtMixin
 from database.models.base import BaseAlchemyModel
 from database.models.logs import LogsModel
@@ -16,9 +18,7 @@ class UserModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     stage: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
-    can_pay: Mapped[bool] = mapped_column(Boolean, default=False)
-    can_clear_purchases: Mapped[bool] = mapped_column(Boolean, default=False)
+    role: Mapped[str] = mapped_column(String(64), nullable=True)
 
     qrcode_image_id: Mapped[str] = mapped_column(
         String(128),
@@ -34,3 +34,7 @@ class UserModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
         "LogsModel",
         cascade="delete, delete-orphan",
     )
+
+    @hybrid_property
+    def is_admin(self) -> bool:
+        return self.role == RightsRole.ADMIN

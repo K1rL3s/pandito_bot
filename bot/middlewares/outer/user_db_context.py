@@ -26,7 +26,6 @@ class UserDbContextMiddleware(BaseMiddleware):
                     tg_id=from_user.id,
                     name="",
                     balance=0,
-                    is_admin=False,
                 )
             elif not db_user.is_active:
                 await users_repo.change_active(db_user.id, True)

@@ -5,13 +5,8 @@ from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const, Format
 
-from bot.handlers.client.start.getters import full_name_getter
-from bot.handlers.client.start.on_actions import (
-    name_handler,
-    register_confirm,
-    register_disconfirm,
-)
-from bot.handlers.client.start.states import StartStates
+from .on_actions import name_handler, register_confirm, register_disconfirm
+from .states import StartStates
 
 START_TEXT = """
 Привет! 👋
@@ -40,11 +35,10 @@ welcome_window = Window(
     state=StartStates.name,
 )
 confirm_name_window = Window(
-    Format("Проверьте введенные данные!\n\nВас зовут <b>{full_name}</b>?"),
+    Format("Проверьте введенные данные!\n\nВас зовут <b>{dialog_data[full_name]}</b>?"),
     Button(Const("Подтвердить"), id="yes", on_click=register_confirm),
     Button(Const("Отмена"), id="no", on_click=register_disconfirm),
     state=StartStates.confirm,
-    getter=full_name_getter,
 )
 
 start_dialog = Dialog(

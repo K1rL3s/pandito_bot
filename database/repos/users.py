@@ -10,18 +10,18 @@ class UsersRepo(BaseAlchemyRepo):
         tg_id: int,
         name: str = "",
         balance: int = 0,
-        is_admin: bool = False,
+        role: str | None = None,
     ) -> UserModel:
-        user = UserModel(id=tg_id, name=name, is_admin=is_admin, balance=balance)
+        user = UserModel(id=tg_id, name=name, role=role, balance=balance)
         self.session.add(user)
         await self.session.flush()
         return user
 
-    async def update(self, tg_id: int, name: str, is_admin: bool) -> None:
+    async def update(self, tg_id: int, name: str, role: str | None = None) -> None:
         query = (
             update(UserModel)
             .where(UserModel.id == tg_id)
-            .values(name=name, is_admin=is_admin)
+            .values(name=name, role=role)
         )
         await self.session.execute(query)
         await self.session.flush()

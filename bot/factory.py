@@ -7,14 +7,14 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats
 
-from bot.commands import SlashCommands
 from bot.config import BotConfig
+from bot.enums import SlashCommand
 
 
 async def set_commands(bot: Bot) -> None:
     commands: dict[str, str] = {
-        SlashCommands.START: "Старт",
-        SlashCommands.MENU: "Меню",
+        SlashCommand.START: "Старт",
+        SlashCommand.MENU: "Меню",
     }
 
     await bot.set_my_commands(

@@ -10,8 +10,6 @@ from .dialogs import start_dialog
 
 router = Router(name=__file__)
 
-router.include_routers(start_dialog)
-
 
 @router.message(CommandStart(), ~MagicData(F.user.name))
 async def start_handler(message: Message, dialog_manager: DialogManager) -> None:
