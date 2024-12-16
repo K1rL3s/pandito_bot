@@ -24,7 +24,7 @@ class PurchasesRepo(BaseAlchemyRepo):
             .join(PurchaseModel, PurchaseModel.product_id == ProductModel.id)
             .where(PurchaseModel.user_id == tg_id)
         )
-        return list(await self.session.execute(query))  # TODO проверить что тут
+        return list(await self.session.execute(query))
 
     async def clear_purchases(self, tg_id: int) -> None:
         query = delete(PurchaseModel).where(PurchaseModel.user_id == tg_id)

@@ -5,7 +5,7 @@ from .broadcast.router import router as broadcast_router
 from .logs.router import router as logs_router
 from .money.router import router as money_router
 from .products.router import router as products_routes
-from .qrcodes.router import router as qrcodes_router
+from .qrcode.router import router as qrcodes_router
 from .secret.router import router as secret_router
 from .users.router import router as users_router
 

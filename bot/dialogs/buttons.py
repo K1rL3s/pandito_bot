@@ -7,7 +7,7 @@ from bot.dialogs.on_actions import on_empty_button, on_go_back, on_go_to_menu
 
 
 class GoToMenuButton(Button):
-    def __init__(self, text: str, **kwargs: Any) -> None:
+    def __init__(self, text: str = "🔙 В меню", **kwargs: Any) -> None:
         super().__init__(
             text=Const(text),
             id="to_menu",

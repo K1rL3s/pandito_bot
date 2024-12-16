@@ -9,9 +9,9 @@ from sqlalchemy.ext.asyncio import (
 
 from database.config import DBConfig
 
-POOL_SIZE = 5
-MAX_POOL_OVERFLOW = 10
-CONNECT_TIMEOUT = 10
+POOL_SIZE = 20
+MAX_POOL_OVERFLOW = 5
+CONNECT_TIMEOUT = 5
 
 
 sessionmaker_kwargs = {
