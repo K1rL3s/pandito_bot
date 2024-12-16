@@ -62,7 +62,7 @@ lint.ignore = [
   "UP042", # Class StrEnum inherits from both `str` and `enum.Enum`
   "SIM102", # Use a single `if` statement instead of nested `if` statements
 ]
-src = ["ii_constructor"]
+src = ["bot", "core", "database", "db", "di", "migrations", "tools"]
 exclude = [
   ".git",
   "build",
