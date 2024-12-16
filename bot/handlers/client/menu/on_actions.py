@@ -5,6 +5,7 @@ from aiogram_dialog.widgets.kbd import Button
 from bot.handlers.client.cart.states import CartStates
 from bot.handlers.client.help.states import HelpStates
 from bot.handlers.client.shop.states import ShopStates
+from bot.handlers.client.transfer_funds.states import TransferFundsStates
 from database.models import UserModel
 
 
@@ -34,17 +35,15 @@ async def on_cart(
     )
 
 
-async def on_transfer_funds(  # TODO: переделать на трансфер
-    callback: CallbackQuery,
-    _: Button,
+async def on_transfer_funds(
+    _: CallbackQuery,
+    __: Button,
     dialog_manager: DialogManager,
 ) -> None:
-    user: UserModel = dialog_manager.middleware_data["user"]
     await dialog_manager.start(
-        state=ShopStates.list,
+        state=TransferFundsStates.id,
         mode=StartMode.RESET_STACK,
         show_mode=ShowMode.DELETE_AND_SEND,
-        data={"user": user},
     )
 
 

@@ -16,6 +16,7 @@ from .shop.router import router as products_router
 # from bot.handlers.stages.router import router as stages_router
 from .start.dialogs import start_dialog
 from .start.router import router as start_router
+from .transfer_funds.dialogs import transfer_dialog
 from .transfer_funds.router import router as transfer_funds_router
 
 
@@ -44,4 +45,5 @@ def _include_client_dialogs(dp: Dispatcher) -> None:
         menu_dialog,
         shop_dialog,
         cart_dialog,
+        transfer_dialog,
     )

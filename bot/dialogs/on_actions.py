@@ -20,12 +20,10 @@ async def on_go_to_menu(
     __: Button,
     dialog_manager: DialogManager,
 ) -> None:
-    user: UserModel = dialog_manager.middleware_data["user"]
     await dialog_manager.start(
         state=MenuStates.menu,
         mode=StartMode.RESET_STACK,
         show_mode=ShowMode.DELETE_AND_SEND,
-        data={"role": user.role},
     )
 
 

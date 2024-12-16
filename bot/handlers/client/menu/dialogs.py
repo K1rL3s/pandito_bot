@@ -14,7 +14,7 @@ menu_dialog = Dialog(
         Const("<b>Главное меню</b>\n"),
         Format("Ваш ID: <code>{user_id}</code> (/id)"),
         Format("Баланс: {balance} <b>Ит.</b>\n"),
-        Format("<u>Вы - {role}</u>", when=F["start_data"]["role"]),
+        Format("<u>Вы - {role}</u>", when=F["role"]),
         Group(
             Button(Const("🛍️ Магазин"), id=BotWindow.SHOP, on_click=on_shop),
             Button(Const("🧺 Корзина"), id=BotWindow.CART, on_click=on_cart),
@@ -27,7 +27,7 @@ menu_dialog = Dialog(
             Button(
                 Const("❗ Админ панель"),
                 id=BotWindow.ADMIN_PANEL,
-                when=F["start_data"]["role"],
+                when=F["role"],
             ),
             width=2,
         ),
