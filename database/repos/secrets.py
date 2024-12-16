@@ -1,20 +1,33 @@
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 
 from database.models import SecretModel, UsersToSecretsModel
 from database.repos.base import BaseAlchemyRepo
 
 
 class SecretsRepo(BaseAlchemyRepo):
-    async def get(self, phrase: str) -> SecretModel | None:
+    async def get_by_phrase(self, phrase: str) -> SecretModel | None:
         query = select(SecretModel).where(SecretModel.phrase == phrase)
+        return await self.session.scalar(query)
+
+    async def get_by_id(self, secret_id: int) -> SecretModel | None:
+        query = select(SecretModel).where(SecretModel.id == secret_id)
         return await self.session.scalar(query)
 
     async def get_all(self) -> list[SecretModel]:
         query = select(SecretModel).order_by(SecretModel.id.asc())
         return list(await self.session.scalars(query))
 
-    async def create(self, phrase: str, reward: int) -> SecretModel:
-        secret = SecretModel(phrase=phrase, reward=reward)
+    async def create(
+        self,
+        phrase: str,
+        reward: int,
+        activation_limit: int,
+    ) -> SecretModel:
+        secret = SecretModel(
+            phrase=phrase,
+            reward=reward,
+            activation_limit=activation_limit,
+        )
         self.session.add(secret)
         await self.session.flush()
         return secret
@@ -23,6 +36,24 @@ class SecretsRepo(BaseAlchemyRepo):
         query = delete(SecretModel).where(SecretModel.id == secret_id)
         await self.session.execute(query)
         await self.session.flush()
+
+    async def is_activation_available(
+        self,
+        secret_id: int,
+        activation_limit: int | None = None,
+    ) -> bool:
+        query = select(
+            func.count(UsersToSecretsModel.created_at),
+        ).where(
+            UsersToSecretsModel.secret_id == secret_id,
+        )
+        activations = await self.session.scalar(query)
+
+        if activation_limit is None:
+            secret = await self.get_by_id(secret_id)
+            activation_limit = secret.activation_limit
+
+        return activations < activation_limit
 
     async def link_user_to_secret(self, user_id: int, secret_id: int) -> None:
         user_to_secret = UsersToSecretsModel(user_id=user_id, secret_id=secret_id)

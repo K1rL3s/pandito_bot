@@ -28,10 +28,11 @@ async def create_secret_handler(
     command: CommandObject,
     secrets_service: FromDishka[SecretsService],
 ) -> None:
-    reward, secret_phrase = command.args.split(maxsplit=1)
+    reward, activation_limit, secret_phrase = command.args.split(maxsplit=2)
     secret_id = await secrets_service.create_secret(
-        secret_phrase,
+        secret_phrase.strip(),
         int(reward),
+        int(activation_limit),
         message.from_user.id,
     )
 

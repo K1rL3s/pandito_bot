@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
-from core.exceptions import NotAdmin, SecretAlreadyExists, UserNotFound
+from core.exceptions import InvalidValue, NotAdmin, SecretAlreadyExists, UserNotFound
 from database.repos.logs import LogsRepo
 from database.repos.secrets import SecretsRepo
 from database.repos.users import UsersRepo
@@ -22,8 +22,14 @@ class SecretsService:
         if user is None:
             raise UserNotFound(user_id)
 
-        secret = await self.secrets_repo.get(phrase)
+        secret = await self.secrets_repo.get_by_phrase(phrase)
         if secret is None:
+            return None
+
+        if not await self.secrets_repo.is_activation_available(
+            secret.id,
+            secret.activation_limit,
+        ):
             return None
 
         if await self.secrets_repo.is_user_already_claimed_secret(user_id, secret.id):
@@ -39,15 +45,28 @@ class SecretsService:
 
         return secret.reward
 
-    async def create_secret(self, phrase: str, reward: int, creator_id: int) -> int:
+    async def create_secret(
+        self,
+        phrase: str,
+        reward: int,
+        activation_limit: int,
+        creator_id: int,
+    ) -> int:
         creator = await self.users_repo.get_by_id(creator_id)
         if creator is None:
             raise UserNotFound(creator_id)
         if not creator.is_admin:
             raise NotAdmin(creator_id)
 
+        if not phrase:
+            raise InvalidValue("Секретная фраза не может быть пустой")
+        if reward < 0:
+            raise InvalidValue("Награда должна быть больше нуля")
+        if activation_limit < 0:
+            raise InvalidValue("Количество активаций должно быть больше нуля")
+
         try:
-            secret = await self.secrets_repo.create(phrase, reward)
+            secret = await self.secrets_repo.create(phrase, reward, activation_limit)
         except IntegrityError as e:  # TODO убрать отсюда импорт ошибки алхимии?
             raise SecretAlreadyExists(phrase) from e
 

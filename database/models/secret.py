@@ -11,3 +11,4 @@ class SecretModel(CreatedAtMixin, BaseAlchemyModel):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     phrase: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
     reward: Mapped[int] = mapped_column(Integer, nullable=False)
+    activation_limit: Mapped[int] = mapped_column(Integer, nullable=False)
