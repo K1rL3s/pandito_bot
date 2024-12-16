@@ -3,6 +3,7 @@ from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram_dialog import DialogManager, ShowMode, StartMode
 
+from bot.enums import SlashCommand
 from bot.stickers import PANDA_WINK
 
 from .states import MenuStates
@@ -10,7 +11,7 @@ from .states import MenuStates
 router = Router(name=__file__)
 
 
-@router.message(Command("menu", "profile", "balance", "me", "start"))
+@router.message(Command(SlashCommand.MENU, SlashCommand.START, SlashCommand.CANCEL))
 async def menu_handler(
     message: Message,
     dialog_manager: DialogManager,

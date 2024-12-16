@@ -5,7 +5,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
-from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats
+from aiogram.types import BotCommand, BotCommandScopeAllPrivateChats, MenuButtonCommands
 
 from bot.config import BotConfig
 from bot.enums import SlashCommand
@@ -13,10 +13,16 @@ from bot.enums import SlashCommand
 
 async def set_commands(bot: Bot) -> None:
     commands: dict[str, str] = {
-        SlashCommand.START: "Старт",
+        SlashCommand.START: "Регистрация",
         SlashCommand.MENU: "Меню",
+        SlashCommand.HELP: "Помощь",
+        SlashCommand.SHOP: "Товары в наличии",
+        SlashCommand.CART: "Купленные товары",
+        SlashCommand.TRANSFER: "Перевод другу",
+        SlashCommand.CANCEL: "Отмена",
     }
 
+    await bot.set_chat_menu_button(menu_button=MenuButtonCommands())
     await bot.set_my_commands(
         [
             BotCommand(command=command, description=description)

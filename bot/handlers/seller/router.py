@@ -166,7 +166,7 @@ async def confirm_clear_cart_handler(
 
     await purchases_repo.clear_purchases(buyer_id)
 
-    text = f"Корзина участника с id {buyer_id} успешно очищена!"
+    text = f"Корзина участника с ID {buyer_id} успешно очищена!"
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="🔙 Назад 🔙", callback_data="cancel")],

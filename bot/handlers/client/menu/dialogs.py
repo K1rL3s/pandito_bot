@@ -20,7 +20,7 @@ menu_dialog = Dialog(
             Button(Const("🧺 Корзина"), id=BotWindow.CART, on_click=on_cart),
             Button(
                 Const("💸 Перевод"),
-                id=BotWindow.TRANSFER_FUNDS,
+                id=BotWindow.TRANSFER,
                 on_click=on_transfer_funds,
             ),
             Button(Const("🆘 Помощь"), id=BotWindow.HELP, on_click=on_help),

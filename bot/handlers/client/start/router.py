@@ -13,7 +13,7 @@ router = Router(name=__file__)
 async def start_handler(message: Message, dialog_manager: DialogManager) -> None:
     await message.answer_sticker(sticker=PANDA_HELLO)
     await dialog_manager.start(
-        StartStates.name,
+        state=StartStates.name,
         mode=StartMode.RESET_STACK,
         show_mode=ShowMode.SEND,
     )

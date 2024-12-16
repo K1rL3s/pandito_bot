@@ -30,7 +30,7 @@ async def id_input_handler(
 
     receiver = await users_repo.get_by_id(receiver_id)
     if not receiver:
-        text = f"Пользователя с id {receiver_id} не существует :("
+        text = f"Пользователя с ID {receiver_id} не существует :("
         await message.answer(text=text)
         return
 
