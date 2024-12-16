@@ -1,16 +1,6 @@
 from aiogram.fsm.state import State, StatesGroup
 
 
-class Registration(StatesGroup):
-    name = State()
-    confirm = State()
-
-
-class TransferFunds(StatesGroup):
-    receiver_id = State()
-    amount = State()
-
-
 class StartStage(StatesGroup):
     participant_id = State()
     reward_amount = State()

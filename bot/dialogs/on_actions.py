@@ -4,7 +4,6 @@ from aiogram_dialog.widgets.kbd import Button
 
 from bot.handlers.client.menu.states import MenuStates
 from bot.handlers.client.shop.states import ShopStates
-from database.models import UserModel
 
 
 async def on_empty_button(
@@ -32,12 +31,10 @@ async def on_go_to_products(
     __: Button,
     dialog_manager: DialogManager,
 ) -> None:
-    user: UserModel = dialog_manager.middleware_data["user"]
     await dialog_manager.start(
         state=ShopStates.list,
         mode=StartMode.RESET_STACK,
         show_mode=ShowMode.DELETE_AND_SEND,
-        data={"user": user},
     )
 
 

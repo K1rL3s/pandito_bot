@@ -15,8 +15,9 @@ from .states import ShopStates
 view_available_products_window = Window(
     Format(
         "Список товаров 🛍️\n\n"
-        "В наличии {products_len} наименований в количестве {total_stock} штук\n"
-        "Баланс: {start_data[user].balance} Ит.",
+        "В наличии <b>{products_len}</b> наименований "
+        "в количестве <b>{total_stock}</b> штук\n"
+        "Баланс: {middleware_data[user].balance} Ит.",
     ),
     Column(
         Select(

@@ -25,7 +25,7 @@ transfer_wait_amount_window = Window(
     Format(
         "Перевод будет отправлен юзеру с именем <b>{dialog_data[receiver_name]}</b>\n\n"
         "Если всё верно, то введите сумму перевода\n"
-        "Ваш баланс - {middleware_data[user].balance}",
+        "Ваш баланс: {middleware_data[user].balance} Ит.",
     ),
     GoToMenuButton(),
     MessageInput(
