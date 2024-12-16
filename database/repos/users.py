@@ -17,11 +17,9 @@ class UsersRepo(BaseAlchemyRepo):
         await self.session.flush()
         return user
 
-    async def update(self, tg_id: int, name: str, role: str | None = None) -> None:
+    async def update(self, tg_id: int, name: str, role: str | None) -> None:
         query = (
-            update(UserModel)
-            .where(UserModel.id == tg_id)
-            .values(name=name, role=role)
+            update(UserModel).where(UserModel.id == tg_id).values(name=name, role=role)
         )
         await self.session.execute(query)
         await self.session.flush()

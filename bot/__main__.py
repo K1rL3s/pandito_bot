@@ -2,7 +2,6 @@ import asyncio
 import contextlib
 import logging
 import sys
-from asyncio import WindowsSelectorEventLoopPolicy
 
 from dishka.integrations.aiogram import setup_dishka
 
@@ -37,6 +36,8 @@ async def main() -> None:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     if sys.platform == "win32":
+        from asyncio import WindowsSelectorEventLoopPolicy
+
         asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
     with contextlib.suppress(KeyboardInterrupt, SystemExit):
         asyncio.run(main())

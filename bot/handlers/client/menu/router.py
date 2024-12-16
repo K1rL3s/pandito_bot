@@ -6,12 +6,12 @@ from aiogram_dialog import DialogManager, ShowMode, StartMode
 from bot.stickers import PANDA_WINK
 from database.models import UserModel
 
-from .states import MenuState
+from .states import MenuStates
 
 router = Router(name=__file__)
 
 
-@router.message(Command("menu", "profile", "balance", "me"))
+@router.message(Command("menu", "profile", "balance", "me", "start"))
 async def menu_handler(
     message: Message,
     user: UserModel,
@@ -19,7 +19,7 @@ async def menu_handler(
 ) -> None:
     await message.answer_sticker(sticker=PANDA_WINK)
     await dialog_manager.start(
-        state=MenuState.menu,
+        state=MenuStates.menu,
         mode=StartMode.RESET_STACK,
         show_mode=ShowMode.DELETE_AND_SEND,
         data={"role": user.role},

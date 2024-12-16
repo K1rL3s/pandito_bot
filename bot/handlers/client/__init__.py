@@ -5,7 +5,8 @@ from .help.dialogs import help_dialog
 from .help.router import router as help_router
 from .menu.dialogs import menu_dialog
 from .menu.router import router as menu_router
-from .products.router import router as product_router
+from .products.dialogs import products_dialog
+from .products.router import router as products_router
 from .purchases.router import router as purchases_router
 from .qrcodes.router import router as qrcodes_router
 from .secret.router import router as secret_router
@@ -18,17 +19,17 @@ from .transfer_funds.router import router as transfer_funds_router
 
 def include_client_routers(dp: Dispatcher) -> None:
     dp.include_routers(  # TODO: проверить порядок роутеров
+        start_router,
         cancel_router,
-        menu_router,
-        product_router,
-        purchases_router,
-        qrcodes_router,
         secret_router,
+        menu_router,
+        help_router,
+        qrcodes_router,
+        products_router,
+        purchases_router,
+        transfer_funds_router,
         seller_router,
         stages_router,
-        start_router,
-        transfer_funds_router,
-        help_router,
     )
     _include_client_dialogs(dp)
 
@@ -39,4 +40,5 @@ def _include_client_dialogs(dp: Dispatcher) -> None:
         start_dialog,
         help_dialog,
         menu_dialog,
+        products_dialog,
     )

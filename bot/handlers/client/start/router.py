@@ -6,8 +6,6 @@ from aiogram_dialog import DialogManager, ShowMode, StartMode
 from bot.handlers.client.start.states import StartStates
 from bot.stickers import PANDA_HELLO
 
-from .dialogs import start_dialog
-
 router = Router(name=__file__)
 
 
