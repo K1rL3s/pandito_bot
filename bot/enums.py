@@ -13,6 +13,7 @@ class SlashCommand(StrEnum):
     SECRET = "secret"
     SECRETS = "secrets"
     CANCEL = "cancel"
+    ID = "id"
 
 
 class TextCommand(StrEnum):
