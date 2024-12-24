@@ -17,7 +17,7 @@ class BroadcastResult:
         return self.ok + self.fail
 
 
-class Broadcaster:  # TODO ускорить
+class Broadcaster:  # TODO ускорить (очередь?)
     def __init__(self, users_repo: UsersRepo) -> None:
         self.users_repo = users_repo
 

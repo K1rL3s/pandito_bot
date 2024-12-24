@@ -18,7 +18,7 @@ class UserModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     stage: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    role: Mapped[str] = mapped_column(String(64), nullable=True)
+    role: Mapped[str] = mapped_column(String(64), default=None, nullable=True)
 
     qrcode_image_id: Mapped[str] = mapped_column(
         String(128),
@@ -38,3 +38,7 @@ class UserModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     @hybrid_property
     def is_admin(self) -> bool:
         return self.role == RightsRole.ADMIN
+
+    @hybrid_property
+    def is_seller(self) -> bool:
+        return self.role == RightsRole.SELLER

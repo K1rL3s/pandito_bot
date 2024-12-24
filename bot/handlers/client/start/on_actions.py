@@ -1,7 +1,7 @@
 import re
 
 from aiogram.types import CallbackQuery, Message
-from aiogram_dialog import DialogManager, ShowMode, StartMode
+from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 from dishka import FromDishka
@@ -50,7 +50,7 @@ async def register_confirm(
 
     await callback.message.answer_sticker(PANDA_NICE)
     await callback.message.answer(text=SUCCESS_TEXT.format(user_id=user_id))
-    await manager.done(show_mode=ShowMode.DELETE_AND_SEND)
+    await manager.done()
 
 
 async def register_disconfirm(
@@ -59,8 +59,6 @@ async def register_disconfirm(
     manager: DialogManager,
 ) -> None:
     await manager.start(
-        mode=StartMode.RESET_STACK,
-        data={"retry": True},
         state=StartStates.name,
-        show_mode=ShowMode.DELETE_AND_SEND,
+        data={"retry": True},
     )

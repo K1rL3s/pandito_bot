@@ -35,9 +35,10 @@ welcome_window = Window(
     state=StartStates.name,
 )
 confirm_name_window = Window(
-    Format("Проверьте введенные данные!\n\nВас зовут <b>{dialog_data[full_name]}</b>?"),
-    Button(Const("Подтвердить"), id="yes", on_click=register_confirm),
-    Button(Const("Отмена"), id="no", on_click=register_disconfirm),
+    Const("❗ Проверьте введенные данные!\n"),
+    Format("Вас зовут <b>{dialog_data[full_name]}</b>?"),
+    Button(Const("✅ Подтвердить"), id="yes", on_click=register_confirm),
+    Button(Const("🔁 Повторить ввод"), id="no", on_click=register_disconfirm),
     state=StartStates.confirm,
 )
 

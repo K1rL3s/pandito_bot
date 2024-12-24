@@ -22,6 +22,7 @@ class QRCodeService:
         self.qr.add_data(deeplink)
         self.qr.make(fit=True)
         img = self.qr.make_image(fill_color="black", back_color="white")
+
         self.qr.clear()
 
         stream = BytesIO()

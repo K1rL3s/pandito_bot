@@ -2,10 +2,10 @@ import operator
 
 from aiogram import F
 from aiogram_dialog import Dialog, Window
-from aiogram_dialog.widgets.kbd import Button, Column, Select
+from aiogram_dialog.widgets.kbd import Back, Button, Column, Select
 from aiogram_dialog.widgets.text import Const, Format
 
-from bot.dialogs.buttons import EmptyButton, GoBackButton, GoToMenuButton
+from bot.dialogs.buttons import EmptyButton, GoToMenuButton
 from bot.dialogs.on_actions import on_go_to_products
 
 from .getters import get_available_products, get_one_product
@@ -43,7 +43,7 @@ view_one_product_window = Window(
         "{product.description}",
     ),
     Button(Const("💵 Купить"), id="buy", on_click=on_buy_product),
-    GoBackButton("🔙 Все товары"),
+    Back(Const("🔙 Все товары")),
     getter=get_one_product,
     state=ShopStates.one,
 )

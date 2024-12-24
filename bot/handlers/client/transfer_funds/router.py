@@ -1,7 +1,7 @@
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
-from aiogram_dialog import DialogManager, ShowMode, StartMode
+from aiogram_dialog import DialogManager
 
 from bot.enums import SlashCommand
 from bot.handlers.client.transfer_funds.states import TransferFundsStates
@@ -16,6 +16,4 @@ async def transfer_funds_handler(
 ) -> None:
     await dialog_manager.start(
         state=TransferFundsStates.id,
-        mode=StartMode.RESET_STACK,
-        show_mode=ShowMode.DELETE_AND_SEND,
     )

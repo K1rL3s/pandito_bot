@@ -1,4 +1,5 @@
-from aiogram import Dispatcher
+from aiogram import F, Router
+from aiogram.filters import MagicData
 
 from .cancel import router as cancel_router
 from .cart.dialogs import cart_dialog
@@ -20,9 +21,19 @@ from .transfer_funds.dialogs import transfer_dialog
 from .transfer_funds.router import router as transfer_funds_router
 
 
-def include_client_routers(dp: Dispatcher) -> None:
-    dp.include_routers(  # TODO: проверить порядок роутеров
+def include_client_routers(root_router: Router) -> None:
+    # регистрация старта до фильтра чтобы у новых юзеров был доступ
+    root_router.include_routers(
         start_router,
+        start_dialog,
+    )
+
+    # фильтр на имя чтобу у новых юзеров не было доступа ко всему кроме регистрации
+    registered_clients_router = Router(name=__file__)
+    for observer in registered_clients_router.observers.values():
+        observer.filter(MagicData(F.user.name))
+
+    registered_clients_router.include_routers(
         cancel_router,
         secret_router,
         menu_router,
@@ -34,13 +45,14 @@ def include_client_routers(dp: Dispatcher) -> None:
         # seller_router,
         # stages_router,
     )
-    _include_client_dialogs(dp)
+    _include_client_dialogs(registered_clients_router)
+
+    root_router.include_routers(registered_clients_router)
 
 
 # Регистрация диалогов после роутеров чтобы дефолт команды не перехватывались диалогами
-def _include_client_dialogs(dp: Dispatcher) -> None:
-    dp.include_routers(
-        start_dialog,
+def _include_client_dialogs(root_router: Router) -> None:
+    root_router.include_routers(
         help_dialog,
         menu_dialog,
         shop_dialog,

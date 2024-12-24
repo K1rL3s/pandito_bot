@@ -10,4 +10,4 @@ router = Router(name=__file__)
     MagicData(F.command.args.cast(int).as_("user_id")),
 )
 async def open_user_by_deeplink(message: Message, user_id: int) -> None:
-    await message.answer(f"uid=<code>{user_id}</code>")
+    await message.answer(f"user_id=<code>{user_id}</code>")

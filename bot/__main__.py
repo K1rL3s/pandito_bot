@@ -6,7 +6,7 @@ import sys
 from dishka.integrations.aiogram import setup_dishka
 
 from bot.config import get_bot_config
-from bot.factory import create_bot, create_dispatcher
+from bot.factories import create_bot, create_dispatcher
 from bot.handlers import include_routers
 from bot.middlewares import setup_middlewares
 from di.container import make_container

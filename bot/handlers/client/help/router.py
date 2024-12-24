@@ -1,7 +1,7 @@
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
-from aiogram_dialog import DialogManager, ShowMode, StartMode
+from aiogram_dialog import DialogManager
 
 from bot.enums import SlashCommand
 
@@ -15,8 +15,4 @@ async def help_message_handler(
     message: Message,
     dialog_manager: DialogManager,
 ) -> None:
-    await dialog_manager.start(
-        HelpStates.help,
-        mode=StartMode.RESET_STACK,
-        show_mode=ShowMode.DELETE_AND_SEND,
-    )
+    await dialog_manager.start(state=HelpStates.help)

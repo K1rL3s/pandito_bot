@@ -1,7 +1,7 @@
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
-from aiogram_dialog import DialogManager, ShowMode, StartMode
+from aiogram_dialog import DialogManager
 
 from bot.enums import SlashCommand
 from bot.stickers import PANDA_WINK
@@ -19,6 +19,4 @@ async def menu_handler(
     await message.answer_sticker(sticker=PANDA_WINK)
     await dialog_manager.start(
         state=MenuStates.menu,
-        mode=StartMode.RESET_STACK,
-        show_mode=ShowMode.DELETE_AND_SEND,
     )

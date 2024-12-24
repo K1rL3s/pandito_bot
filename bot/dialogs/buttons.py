@@ -3,7 +3,7 @@ from typing import Any
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const
 
-from bot.dialogs.on_actions import on_empty_button, on_go_back, on_go_to_menu
+from bot.dialogs.on_actions import on_empty_button, on_go_to_admin_panel, on_go_to_menu
 
 
 class GoToMenuButton(Button):
@@ -16,9 +16,14 @@ class GoToMenuButton(Button):
         )
 
 
-class GoBackButton(Button):
-    def __init__(self, text: str, **kwargs: Any) -> None:
-        super().__init__(text=Const(text), id="go_back", on_click=on_go_back, **kwargs)
+class GoToAdminPanelButton(Button):
+    def __init__(self, text: str = "❗ Админ панель", **kwargs: Any) -> None:
+        super().__init__(
+            text=Const(text),
+            id="to_admin_panel",
+            on_click=on_go_to_admin_panel,
+            **kwargs,
+        )
 
 
 class EmptyButton(Button):

@@ -3,6 +3,7 @@ from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.kbd import Button, Group
 from aiogram_dialog.widgets.text import Const, Format
 
+from bot.dialogs.buttons import GoToAdminPanelButton
 from bot.enums import BotWindow
 
 from .getters import get_user_info
@@ -14,7 +15,7 @@ menu_dialog = Dialog(
         Const("<b>Главное меню</b>\n"),
         Format("Ваш ID: <code>{user_id}</code> (/id)"),
         Format("Баланс: {balance} <b>Ит.</b>\n"),
-        Format("<u>Вы - {role}</u>", when=F["role"]),
+        Format("Вы - <u>{role}</u>", when=F["role"]),
         Group(
             Button(Const("🛍️ Магазин"), id=BotWindow.SHOP, on_click=on_shop),
             Button(Const("🧺 Корзина"), id=BotWindow.CART, on_click=on_cart),
@@ -24,13 +25,9 @@ menu_dialog = Dialog(
                 on_click=on_transfer_funds,
             ),
             Button(Const("🆘 Помощь"), id=BotWindow.HELP, on_click=on_help),
-            Button(
-                Const("❗ Админ панель"),
-                id=BotWindow.ADMIN_PANEL,
-                when=F["role"],
-            ),
             width=2,
         ),
+        GoToAdminPanelButton(when=F["role"]),
         getter=get_user_info,
         state=MenuStates.menu,
     ),

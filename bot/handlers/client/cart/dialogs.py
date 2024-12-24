@@ -2,8 +2,9 @@ from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.text import Format
 
 from bot.dialogs.buttons import GoToMenuButton
-from bot.handlers.client.cart.getters import get_purchases
-from bot.handlers.client.cart.states import CartStates
+
+from .getters import get_purchases
+from .states import CartStates
 
 cart_window = Window(
     Format(

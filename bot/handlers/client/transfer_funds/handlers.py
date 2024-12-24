@@ -2,7 +2,7 @@ import contextlib
 
 from aiogram.exceptions import TelegramAPIError
 from aiogram.types import Message
-from aiogram_dialog import DialogManager, ShowMode, StartMode
+from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.input import MessageInput
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
@@ -68,7 +68,5 @@ async def amount_input_handler(
 
     await dialog_manager.start(
         state=MenuStates.menu,
-        mode=StartMode.RESET_STACK,
-        show_mode=ShowMode.DELETE_AND_SEND,
         data={FORCE_GET_USER_KEY: True},
     )

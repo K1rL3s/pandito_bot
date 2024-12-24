@@ -5,14 +5,14 @@ from aiogram_dialog import DialogManager
 
 from bot.enums import SlashCommand
 
-from .states import BroadcastStates
+from .states import AdminPanelStates
 
 router = Router(name=__file__)
 
 
-@router.message(Command(SlashCommand.BROADCAST))
-async def admin_broadcast(
+@router.message(Command(SlashCommand.ADMIN))
+async def admin_panel(
     message: Message,
     dialog_manager: DialogManager,
 ) -> None:
-    await dialog_manager.start(state=BroadcastStates.wait)
+    await dialog_manager.start(state=AdminPanelStates.panel)
