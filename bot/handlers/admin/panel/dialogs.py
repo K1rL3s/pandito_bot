@@ -4,7 +4,7 @@ from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToMenuButton
 
-from .on_actions import on_go_to_broadcast
+from .on_actions import on_go_to_broadcast, on_go_to_secrets
 from .states import AdminPanelStates
 
 admin_panel_window = Window(
@@ -13,7 +13,7 @@ admin_panel_window = Window(
         Button(Const("📢 Рассылка"), id="broadcast", on_click=on_go_to_broadcast),
         Button(Const("👥 Пользователи"), id="users"),
         Button(Const("🛍️ Товары"), id="products"),
-        Button(Const("🤫 Секреты"), id="secrets"),
+        Button(Const("🤫 Секреты"), id="secrets", on_click=on_go_to_secrets),
         Button(Const("🧠 Задания"), id="tasks"),
         width=2,
     ),

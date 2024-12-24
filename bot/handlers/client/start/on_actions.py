@@ -22,43 +22,40 @@ SUCCESS_TEXT = """
 async def name_handler(
     message: Message,
     message_input: MessageInput,
-    manager: DialogManager,
+    dialog_manager: DialogManager,
 ) -> None:
-    manager.dialog_data["retry"] = True
+    dialog_manager.dialog_data["retry"] = True
 
     full_name = message.text.strip()
     if not re.match(r"^[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+$", full_name):
         return
 
-    manager.dialog_data["full_name"] = full_name
-    await manager.next()
+    dialog_manager.dialog_data["full_name"] = full_name
+    await dialog_manager.next()
 
 
 @inject
 async def register_confirm(
     callback: CallbackQuery,
     button: Button,
-    manager: DialogManager,
+    dialog_manager: DialogManager,
     users_repo: FromDishka[UsersRepo],
 ) -> None:
     user_id = callback.from_user.id
-    full_name = manager.dialog_data["full_name"]
-    owner_id: int = manager.middleware_data["owner_id"]
+    full_name = dialog_manager.dialog_data["full_name"]
+    owner_id: int = dialog_manager.middleware_data["owner_id"]
 
     role = RightsRole.ADMIN if user_id == owner_id else None
     await users_repo.update(user_id, full_name, role)
 
     await callback.message.answer_sticker(PANDA_NICE)
     await callback.message.answer(text=SUCCESS_TEXT.format(user_id=user_id))
-    await manager.done()
+    await dialog_manager.done()
 
 
 async def register_disconfirm(
     callback: CallbackQuery,
     button: Button,
-    manager: DialogManager,
+    dialog_manager: DialogManager,
 ) -> None:
-    await manager.start(
-        state=StartStates.name,
-        data={"retry": True},
-    )
+    await dialog_manager.start(state=StartStates.name, data={"retry": True})

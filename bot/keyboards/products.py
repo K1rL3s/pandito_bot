@@ -14,6 +14,6 @@ def products_seller_keyboard(products: list[ProductModel]) -> InlineKeyboardMark
         for product in products
     ]
     product_kb.append(
-        [InlineKeyboardButton(text="🔙 Назад 🔙", callback_data="cancel")],
+        [InlineKeyboardButton(text="⏪ Назад ⏪", callback_data="cancel")],
     )
     return InlineKeyboardMarkup(inline_keyboard=product_kb)

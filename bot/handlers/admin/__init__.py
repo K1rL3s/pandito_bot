@@ -9,6 +9,7 @@ from .panel.dialogs import admin_panel_dialog
 from .panel.router import router as admin_panel_router
 from .products.router import router as products_routes
 from .qrcode.router import router as qrcodes_router
+from .secret.dialogs import create_secret_dialog, view_secrets_dialog
 from .secret.router import router as secret_router
 from .users.router import router as users_router
 
@@ -37,4 +38,6 @@ def _include_admin_dialogs(router: Router) -> None:
     router.include_routers(
         admin_panel_dialog,
         broadcast_dialog,
+        view_secrets_dialog,
+        create_secret_dialog,
     )

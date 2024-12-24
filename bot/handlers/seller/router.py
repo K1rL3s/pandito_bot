@@ -87,7 +87,7 @@ async def salesman_buyer_id_handler(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="🔙 Назад 🔙",
+                    text="⏪ Назад ⏪",
                     callback_data="view_products_salesman",
                 ),
             ],
@@ -148,7 +148,7 @@ async def show_cart_handler(
         text = "Корзина пуста"
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
-                [InlineKeyboardButton(text="🔙 Назад 🔙", callback_data="cancel")],
+                [InlineKeyboardButton(text="⏪ Назад ⏪", callback_data="cancel")],
             ],
         )
 
@@ -169,7 +169,7 @@ async def confirm_clear_cart_handler(
     text = f"Корзина участника с ID {buyer_id} успешно очищена!"
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🔙 Назад 🔙", callback_data="cancel")],
+            [InlineKeyboardButton(text="⏪ Назад ⏪", callback_data="cancel")],
         ],
     )
 

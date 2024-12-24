@@ -10,6 +10,8 @@ class SlashCommand(StrEnum):
     TRANSFER = "transfer"
     ADMIN = "admin"
     BROADCAST = "broadcast"
+    SECRET = "secret"
+    SECRETS = "secrets"
     CANCEL = "cancel"
 
 

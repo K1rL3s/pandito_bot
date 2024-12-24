@@ -11,7 +11,7 @@ from .states import BroadcastStates
 
 wait_message_window = Window(
     Const("ℹ️ Введите сообщение для рассылки"),
-    GoToAdminPanelButton("🔙 Админ-панель"),
+    GoToAdminPanelButton("⏪ Админ-панель"),
     MessageInput(
         func=on_input_broadcast_message,
         content_types=[ContentType.TEXT, ContentType.PHOTO],

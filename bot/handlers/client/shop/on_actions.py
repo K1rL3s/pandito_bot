@@ -9,7 +9,7 @@ from database.models import UserModel
 from database.repos.products import ProductsRepo
 
 
-async def on_view_product_selected(
+async def on_product_selected(
     _: CallbackQuery,
     __: Widget,
     dialog_manager: DialogManager,

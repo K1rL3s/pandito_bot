@@ -18,7 +18,7 @@ from database.repos.users import UsersRepo
 async def id_input_handler(
     message: Message,
     message_input: MessageInput,
-    manager: DialogManager,
+    dialog_manager: DialogManager,
     users_repo: FromDishka[UsersRepo],
 ) -> None:
     receiver_id = int(message.text)
@@ -34,9 +34,9 @@ async def id_input_handler(
         await message.answer(text=text)
         return
 
-    manager.dialog_data["receiver_id"] = receiver.id
-    manager.dialog_data["receiver_name"] = receiver.name
-    await manager.next()
+    dialog_manager.dialog_data["receiver_id"] = receiver.id
+    dialog_manager.dialog_data["receiver_name"] = receiver.name
+    await dialog_manager.next()
 
 
 @inject

@@ -2,14 +2,14 @@ import operator
 
 from aiogram import F
 from aiogram_dialog import Dialog, Window
-from aiogram_dialog.widgets.kbd import Back, Button, Column, Select
+from aiogram_dialog.widgets.kbd import Back, Button, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import EmptyButton, GoToMenuButton
 from bot.dialogs.on_actions import on_go_to_products
 
 from .getters import get_available_products, get_one_product
-from .on_actions import on_buy_product, on_view_product_selected
+from .on_actions import on_buy_product, on_product_selected
 from .states import ShopStates
 
 view_available_products_window = Window(
@@ -19,16 +19,20 @@ view_available_products_window = Window(
         "в количестве <b>{total_stock}</b> штук\n"
         "Баланс: {middleware_data[user].balance} Ит.",
     ),
-    Column(
+    ScrollingGroup(
         Select(
             Format("{item.name} — {item.price} Ит."),
-            id="available_products",
+            id="products_select",
             item_id_getter=operator.attrgetter("id"),
             items="products",
             type_factory=int,
-            on_click=on_view_product_selected,
+            on_click=on_product_selected,
         ),
+        width=1,
+        height=10,
+        hide_on_single_page=True,
         when=F["products"].is_not(None),
+        id="products_group",
     ),
     EmptyButton(when=F["products"].is_not(None)),
     GoToMenuButton(),
@@ -43,7 +47,7 @@ view_one_product_window = Window(
         "{product.description}",
     ),
     Button(Const("💵 Купить"), id="buy", on_click=on_buy_product),
-    Back(Const("🔙 Все товары")),
+    Back(Const("⏪ Все товары")),
     getter=get_one_product,
     state=ShopStates.one,
 )

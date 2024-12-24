@@ -42,18 +42,21 @@ class SecretsRepo(BaseAlchemyRepo):
         secret_id: int,
         activation_limit: int | None = None,
     ) -> bool:
-        query = select(
-            func.count(UsersToSecretsModel.created_at),
-        ).where(
-            UsersToSecretsModel.secret_id == secret_id,
-        )
-        activations = await self.session.scalar(query)
+        activations = await self.total_activations(secret_id)
 
         if activation_limit is None:
             secret = await self.get_by_id(secret_id)
             activation_limit = secret.activation_limit
 
         return activations < activation_limit
+
+    async def total_activations(self, secret_id: int) -> int:
+        query = select(
+            func.count(UsersToSecretsModel.created_at),
+        ).where(
+            UsersToSecretsModel.secret_id == secret_id,
+        )
+        return await self.session.scalar(query)
 
     async def link_user_to_secret(self, user_id: int, secret_id: int) -> None:
         user_to_secret = UsersToSecretsModel(user_id=user_id, secret_id=secret_id)

@@ -16,10 +16,12 @@ MAX_MESSAGE_LEN = 1024 * 3
 async def on_input_broadcast_message(
     message: Message,
     message_input: MessageInput,
-    manager: DialogManager,
+    dialog_manager: DialogManager,
 ) -> None:
-    manager.dialog_data["broadcast_message"] = message.html_text[:MAX_MESSAGE_LEN]
-    await manager.next()
+    dialog_manager.dialog_data["broadcast_message"] = message.html_text[
+        :MAX_MESSAGE_LEN
+    ]
+    await dialog_manager.next()
 
 
 @inject

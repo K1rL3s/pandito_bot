@@ -86,7 +86,7 @@ async def stage_reward_handler(
     text = f"Участнику с id {participant_id} начислено {amount} Ит."
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🔙 Назад 🔙", callback_data="start_stage")],
+            [InlineKeyboardButton(text="⏪ Назад ⏪", callback_data="start_stage")],
         ],
     )
 
