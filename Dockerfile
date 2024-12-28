@@ -17,12 +17,8 @@ COPY ./uv.lock ./uv.lock
 
 # я панк мне по кайфу
 COPY ./alembic.ini ./alembic.ini
-COPY ./bot ./bot
-COPY ./core ./core
-COPY ./database ./database
-COPY ./di ./di
 COPY ./migrations ./migrations
-COPY ./tools ./tools
+COPY ./src ./
 
 
 RUN --mount=type=cache,target=/root/.cache/uv \
