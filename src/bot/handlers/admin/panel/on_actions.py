@@ -4,6 +4,7 @@ from aiogram_dialog.widgets.kbd import Button
 
 from bot.handlers.admin.broadcast.states import BroadcastStates
 from bot.handlers.admin.secret.states import ViewSecretsStates
+from bot.handlers.admin.users.view.states import ViewUserStates
 
 
 async def on_go_to_broadcast(
@@ -20,3 +21,11 @@ async def on_go_to_secrets(
     dialog_manager: DialogManager,
 ) -> None:
     await dialog_manager.start(state=ViewSecretsStates.list)
+
+
+async def on_go_to_view_users(
+    _: CallbackQuery,
+    __: Button,
+    dialog_manager: DialogManager,
+) -> None:
+    await dialog_manager.start(state=ViewUserStates.id)

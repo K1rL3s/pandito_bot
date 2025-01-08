@@ -18,7 +18,7 @@ class QRCodeService:
     def generate_qrcode(self, user_id: int, bot_name: str) -> BytesIO:
         self.qr.clear()
 
-        deeplink = f"https://t.me/{bot_name}?start={user_id}"
+        deeplink = f"https://t.me/{bot_name}?start=id_{user_id}"
         self.qr.add_data(deeplink)
         self.qr.make(fit=True)
         img = self.qr.make_image(fill_color="black", back_color="white")

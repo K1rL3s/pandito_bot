@@ -1,6 +1,11 @@
 from aiogram import Bot, Router
 from aiogram.filters import Command, StateFilter
-from aiogram.types import BufferedInputFile, Message
+from aiogram.types import (
+    BufferedInputFile,
+    KeyboardButton,
+    Message,
+    ReplyKeyboardMarkup,
+)
 from dishka import FromDishka
 
 from bot.enums import SlashCommand
@@ -21,16 +26,31 @@ async def show_my_id_as_qrcode(
 ) -> None:
     text = (
         "Покажи это организатору =)\n\n"
-        f"ID: <code>{message.from_user.id}</code> ({message.from_user.id:_})"
+        f"ID: <code>{message.from_user.id}</code> ({message.from_user.id:_})\n\n"
+    )
+    keyboard = ReplyKeyboardMarkup(
+        keyboard=[[KeyboardButton(text="/start")]],
+        resize_keyboard=True,
+        one_time_keyboard=True,
     )
 
     if user.qrcode_image_id:
-        await message.answer_photo(photo=user.qrcode_image_id, caption=text)
+        await message.answer_photo(
+            photo=user.qrcode_image_id,
+            caption=text,
+            reply_markup=keyboard,
+        )
         return
 
     bot_name = (await bot.me()).username
     qrcode = qrcode_service.generate_qrcode(user.id, bot_name)
     photo = BufferedInputFile(qrcode.getvalue(), f"qrcode_{user.id}.png")
-    bot_message = await message.answer_photo(photo=photo, caption=text)
+
+    bot_message = await message.answer_photo(
+        photo=photo,
+        caption=text,
+        reply_markup=keyboard,
+    )
+
     qrcode_image_id = bot_message.photo[-1].file_id
     await users_repo.set_qrcode_image_id(user.id, qrcode_image_id)

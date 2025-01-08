@@ -1,42 +1,32 @@
-from aiogram import Router
-from aiogram.filters import Command, CommandObject, StateFilter
+from aiogram import F, Router
+from aiogram.dispatcher.event.bases import CancelHandler
+from aiogram.filters import CommandStart, MagicData
 from aiogram.types import Message
+from aiogram_dialog import DialogManager
 from dishka import FromDishka
 
-from core.services.users import UsersService
+from bot.handlers.admin.users.view.states import ViewUserStates
 from database.repos.users import UsersRepo
 
 router = Router(name=__file__)
 
 
-@router.message(Command("stage"), StateFilter(None))
-async def admin_change_stage(
+@router.message(
+    CommandStart(deep_link=True, magic=F.args.startswith("id_")),
+    MagicData(F.command.args.as_("user_id")),
+)
+async def open_user_by_deeplink(
     message: Message,
-    command: CommandObject,
-    users_service: FromDishka[UsersService],
-) -> None:
-    if command.args and len(command.args.split()) == 2:
-        args = command.args.split()
-        user_id, stage = int(args[0]), int(args[1])
-        await users_service.change_stage(user_id, stage)
-        await message.answer("Успех!")
-    else:
-        await message.answer("Формат: /stage <user_id> <stage>", parse_mode=None)
-
-
-@router.message(Command("list_users"), StateFilter(None))
-async def list_users(
-    message: Message,
+    user_id: str,
+    dialog_manager: DialogManager,
     users_repo: FromDishka[UsersRepo],
 ) -> None:
-    users = await users_repo.get_all()
-    if users:
-        user_list = "\n".join(
-            [
-                f"ID: {user.id}, ФИО: {user.name}, Баланс: {user.balance} Ит."
-                for user in users
-            ],
-        )
-        await message.answer(f"<b>Список участников:</b>\n\n{user_list}")
-    else:
-        await message.answer("Нет зарегистрированных участников.")
+    _prefix, user_id = user_id.split("_", maxsplit=1)
+    if not user_id.isdigit():
+        raise CancelHandler
+
+    user = await users_repo.get_by_id(int(user_id))
+    if user is None:
+        await message.answer(f"Юзер c ID {user_id} не найден")
+
+    await dialog_manager.start(state=ViewUserStates.one, data={"view_user": user})

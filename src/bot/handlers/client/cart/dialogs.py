@@ -10,7 +10,7 @@ cart_window = Window(
     Format(
         "🧺 Куплено {total_products} наименований в количестве {total_purchases} штук\n"
         "Чтобы их забрать, подойдите к <u>магазину</u> или в <u>Отделение А-337</u>\n\n"
-        "{purchases_list}",
+        "{formated_info}",
     ),
     GoToMenuButton(),
     getter=get_purchases,

@@ -9,12 +9,12 @@ from database.repos.purchases import PurchasesRepo
 
 
 @inject
-async def get_purchases(
+async def get_view_user_cart(
     dialog_manager: DialogManager,
     purchases_repo: FromDishka[PurchasesRepo],
     **__: Any,
 ) -> dict[str, Any]:
-    user: UserModel = dialog_manager.middleware_data["user"]
+    user: UserModel = dialog_manager.dialog_data["view_user"]
     purchases = await purchases_repo.get_user_purchases(user.id)
     purchases_info = purchases_repo.format_purchases(purchases)
     return {

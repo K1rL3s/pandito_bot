@@ -12,23 +12,21 @@ from .qrcode.router import router as qrcodes_router
 from .secret.router import router as secret_router
 from .shop.dialogs import shop_dialog
 from .shop.router import router as products_router
-
-# from bot.handlers.seller.router import router as seller_router
-# from bot.handlers.stages.router import router as stages_router
 from .start.dialogs import start_dialog
 from .start.router import router as start_router
 from .transfer_funds.dialogs import transfer_dialog
 from .transfer_funds.router import router as transfer_funds_router
 
 
-def include_client_routers(root_router: Router) -> None:
-    # регистрация старта до фильтра чтобы у новых юзеров был доступ
+def include_register_routers(root_router: Router) -> None:
     root_router.include_routers(
         start_router,
         start_dialog,
     )
 
-    # фильтр на имя чтобу у новых юзеров не было доступа ко всему кроме регистрации
+
+def include_client_routers(root_router: Router) -> None:
+    # фильтр на имя чтобу у новых юзеров не было доступа кроме регистрации
     registered_clients_router = Router(name=__file__)
     for observer in registered_clients_router.observers.values():
         observer.filter(MagicData(F.user.name))
@@ -42,16 +40,17 @@ def include_client_routers(root_router: Router) -> None:
         products_router,
         purchases_router,
         transfer_funds_router,
-        # seller_router,
-        # stages_router,
     )
-    _include_client_dialogs(registered_clients_router)
 
     root_router.include_routers(registered_clients_router)
 
 
-# Регистрация диалогов после роутеров чтобы дефолт команды не перехватывались диалогами
-def _include_client_dialogs(root_router: Router) -> None:
+def include_client_dialogs(root_router: Router) -> None:
+    # фильтр на имя чтобу у новых юзеров не было доступа ко всему кроме регистрации
+    registered_clients_router = Router(name=__file__)
+    for observer in registered_clients_router.observers.values():
+        observer.filter(MagicData(F.user.name))
+
     root_router.include_routers(
         help_dialog,
         menu_dialog,
