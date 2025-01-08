@@ -43,7 +43,7 @@ async def show_my_id_as_qrcode(
         return
 
     bot_name = (await bot.me()).username
-    qrcode = qrcode_service.generate_qrcode(user.id, bot_name)
+    qrcode = qrcode_service.user_id_qrcode(bot_name, user.id)
     photo = BufferedInputFile(qrcode.getvalue(), f"qrcode_{user.id}.png")
 
     bot_message = await message.answer_photo(

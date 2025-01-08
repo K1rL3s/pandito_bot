@@ -6,3 +6,6 @@ class RightsRole(StrEnum, ValuesEnum):
     SELLER = "seller"
     STAGER = "stager"
     LOTTERY = "lottery"
+
+
+ALL_ROLES = (*enumerate(RightsRole.values()), (len(RightsRole.values()), None))

@@ -21,6 +21,6 @@ async def check_secret_handler(
             secret_phrase,
         )
         if reward is not None:
-            await message.answer(f"🕵 Секрет найден! Начислено {reward} коинов 💰")
+            await message.answer(f"🕵 Секрет найден! Начислено {reward} Пятаков 💰")
 
     await message.delete()

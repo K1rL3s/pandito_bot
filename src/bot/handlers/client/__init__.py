@@ -14,6 +14,7 @@ from .shop.dialogs import shop_dialog
 from .shop.router import router as products_router
 from .start.dialogs import start_dialog
 from .start.router import router as start_router
+from .task.router import router as task_router
 from .transfer_funds.dialogs import transfer_dialog
 from .transfer_funds.router import router as transfer_funds_router
 
@@ -33,6 +34,7 @@ def include_client_routers(root_router: Router) -> None:
 
     registered_clients_router.include_routers(
         cancel_router,
+        task_router,
         secret_router,
         menu_router,
         help_router,

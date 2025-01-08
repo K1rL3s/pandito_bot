@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from sqlalchemy import delete, select
 
+from core.ids import ProductId, UserId
 from database.models import ProductModel, PurchaseModel
 from database.repos.base import BaseAlchemyRepo
 
@@ -14,7 +15,12 @@ class PurchasesInfo:
 
 
 class PurchasesRepo(BaseAlchemyRepo):
-    async def create(self, tg_id: int, product_id: int, quantity: int) -> PurchaseModel:
+    async def create(
+        self,
+        tg_id: UserId,
+        product_id: ProductId,
+        quantity: int,
+    ) -> PurchaseModel:
         purchase = PurchaseModel(
             user_id=tg_id,
             product_id=product_id,
@@ -26,7 +32,7 @@ class PurchasesRepo(BaseAlchemyRepo):
 
     async def get_user_purchases(
         self,
-        tg_id: int,
+        tg_id: UserId,
     ) -> list[tuple[ProductModel, PurchaseModel]]:
         query = (
             select(ProductModel, PurchaseModel)
@@ -35,7 +41,7 @@ class PurchasesRepo(BaseAlchemyRepo):
         )
         return list(await self.session.execute(query))
 
-    async def clear_purchases(self, tg_id: int) -> None:
+    async def clear_purchases(self, tg_id: UserId) -> None:
         query = delete(PurchaseModel).where(PurchaseModel.user_id == tg_id)
         await self.session.execute(query)
         await self.session.flush()

@@ -56,7 +56,7 @@ secret_activation_limit_window = Window(
 confirm_create_secret_window = Window(
     Format(
         "❓ Создать секрет с фразой <code>{dialog_data[phrase]}</code>, "
-        "наградой в <code>{dialog_data[reward]}</code> Ит. "
+        "наградой в <code>{dialog_data[reward]}</code> Пятаков "
         "и <code>{dialog_data[activation_limit]}</code> активациями?",
     ),
     Button(

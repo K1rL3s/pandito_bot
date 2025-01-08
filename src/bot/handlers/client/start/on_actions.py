@@ -10,6 +10,7 @@ from dishka.integrations.aiogram_dialog import inject
 from bot.handlers.client.start.states import StartStates
 from bot.stickers import PANDA_NICE
 from core.enums import RightsRole
+from core.ids import UserId
 from database.repos.users import UsersRepo
 
 SUCCESS_TEXT = """
@@ -43,7 +44,7 @@ async def register_confirm(
 ) -> None:
     user_id = callback.from_user.id
     full_name = dialog_manager.dialog_data["full_name"]
-    owner_id: int = dialog_manager.middleware_data["owner_id"]
+    owner_id: UserId = dialog_manager.middleware_data["owner_id"]
 
     role = RightsRole.ADMIN if user_id == owner_id else None
     await users_repo.update(user_id, full_name, role)

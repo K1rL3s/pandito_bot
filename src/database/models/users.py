@@ -3,6 +3,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.enums import RightsRole
+from core.ids import UserId
 from database.models._mixins import CreatedAtMixin, UpdatedAtMixin
 from database.models.base import BaseAlchemyModel
 from database.models.logs import LogsModel
@@ -12,7 +13,7 @@ from database.models.purchases import PurchaseModel
 class UserModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[UserId] = mapped_column(BigInteger, primary_key=True)
     name: Mapped[str] = mapped_column(String(256), nullable=False)
     balance: Mapped[int] = mapped_column(Integer, nullable=False)
     stage: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

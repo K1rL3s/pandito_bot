@@ -1,6 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
 from core.exceptions import InvalidValue, NotAdmin, SecretAlreadyExists, UserNotFound
+from core.ids import UserId
 from database.repos.logs import LogsRepo
 from database.repos.secrets import SecretsRepo
 from database.repos.users import UsersRepo
@@ -17,7 +18,7 @@ class SecretsService:
         self.users_repo = users_repo
         self.logs_repo = logs_repo
 
-    async def reward_for_secret(self, user_id: int, phrase: str) -> int | None:
+    async def reward_for_secret(self, user_id: UserId, phrase: str) -> int | None:
         user = await self.users_repo.get_by_id(user_id)
         if user is None:
             raise UserNotFound(user_id)
@@ -32,7 +33,7 @@ class SecretsService:
         ):
             return None
 
-        if await self.secrets_repo.is_user_already_claimed_secret(user_id, secret.id):
+        if await self.secrets_repo.is_secret_claimed(user_id, secret.id):
             return None
 
         await self.secrets_repo.link_user_to_secret(user_id, secret.id)

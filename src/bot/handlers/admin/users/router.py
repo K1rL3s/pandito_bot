@@ -13,15 +13,15 @@ router = Router(name=__file__)
 
 @router.message(
     CommandStart(deep_link=True, magic=F.args.startswith("id_")),
-    MagicData(F.command.args.as_("user_id")),
+    MagicData(F.command.args.as_("user_deeplink")),
 )
 async def open_user_by_deeplink(
     message: Message,
-    user_id: str,
+    user_deeplink: str,
     dialog_manager: DialogManager,
     users_repo: FromDishka[UsersRepo],
 ) -> None:
-    _prefix, user_id = user_id.split("_", maxsplit=1)
+    _prefix, user_id = user_deeplink.split("_", maxsplit=1)
     if not user_id.isdigit():
         raise CancelHandler
 

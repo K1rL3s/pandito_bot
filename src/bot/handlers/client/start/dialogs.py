@@ -5,6 +5,8 @@ from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const, Format
 
+from bot.dialogs.on_actions import on_start_update_dialog_data
+
 from .on_actions import name_handler, register_confirm, register_disconfirm
 from .states import StartStates
 
@@ -13,7 +15,7 @@ START_TEXT = """
 
 Меня зовут <b>Пандито!</b> 🐼
 
-Я буду хранить твои <u>Иткоины</u> и оповещать тебя о всех важных событиях, приуроченных Дню рождения Института информационных технологий!
+Я буду хранить твои <u>Пятаки</u> и оповещать тебя о всех важных событиях, приуроченных Дню рождения Института информационных технологий!
 """.strip()  # noqa
 
 BAD_FORMAT = "Неверный формат!"
@@ -27,7 +29,7 @@ REGISTER_TEXT = """
 welcome_window = Window(
     Const(
         START_TEXT,
-        when=~F["dialog_data"]["retry"] & ~F["start_data"]["retry"],
+        when=~F["dialog_data"]["retry"],
     ),
     Const(BAD_FORMAT, when=F["dialog_data"]["retry"]),
     Const("\n" + REGISTER_TEXT),
@@ -45,4 +47,5 @@ confirm_name_window = Window(
 start_dialog = Dialog(
     welcome_window,
     confirm_name_window,
+    on_start=on_start_update_dialog_data,
 )

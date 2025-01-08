@@ -4,6 +4,7 @@ from aiogram_dialog.api.internal import Widget
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
+from core.ids import ProductId
 from core.services.products import ProductsService
 from database.models import UserModel
 from database.repos.products import ProductsRepo
@@ -27,7 +28,7 @@ async def on_buy_product(
     products_repo: FromDishka[ProductsRepo],
     products_service: FromDishka[ProductsService],
 ) -> None:
-    product_id: int = dialog_manager.dialog_data["product_id"]
+    product_id: ProductId = dialog_manager.dialog_data["product_id"]
     user: UserModel = dialog_manager.middleware_data["user"]
     product = await products_repo.get_one(product_id)
 
@@ -35,7 +36,7 @@ async def on_buy_product(
         dialog_manager.dialog_data["final_message"] = "Упс, продукт уже раскупили"
     elif user.balance < product.price:
         dialog_manager.dialog_data["final_message"] = (
-            "Упс, у вас недостаточно <b>Иткоинов</b>!"
+            "Упс, у вас недостаточно <b>Пятаков</b>!"
         )
     else:
         await products_service.buy_product(user.id, product.id, 1)

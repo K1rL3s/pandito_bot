@@ -83,7 +83,7 @@ async def stage_reward_handler(
 
     await users_service.admin_update_balance(participant_id, user.id, amount)
 
-    text = f"Участнику с id {participant_id} начислено {amount} Ит."
+    text = f"Участнику с id {participant_id} начислено {amount} Пятаков"
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="⏪ Назад ⏪", callback_data="start_stage")],

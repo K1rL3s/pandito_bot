@@ -1,5 +1,6 @@
 from sqlalchemy import delete, select, update
 
+from core.ids import ProductId
 from database.models.products import ProductModel
 from database.repos.base import BaseAlchemyRepo
 
@@ -22,7 +23,7 @@ class ProductsRepo(BaseAlchemyRepo):
         await self.session.flush()
         return product  # TODO проверить что айди есть
 
-    async def get_one(self, product_id: int) -> ProductModel | None:
+    async def get_one(self, product_id: ProductId) -> ProductModel | None:
         query = select(ProductModel).where(ProductModel.id == product_id)
         return await self.session.scalar(query)
 
@@ -34,7 +35,7 @@ class ProductsRepo(BaseAlchemyRepo):
         query = select(ProductModel)
         return list(await self.session.scalars(query))
 
-    async def set_stock(self, product_id: int, new_stock: int) -> int:
+    async def set_stock(self, product_id: ProductId, new_stock: int) -> int:
         query = (
             update(ProductModel)
             .where(ProductModel.id == product_id)
@@ -44,7 +45,7 @@ class ProductsRepo(BaseAlchemyRepo):
         await self.session.flush()
         return new_stock
 
-    async def set_price(self, product_id: int, new_price: int) -> int:
+    async def set_price(self, product_id: ProductId, new_price: int) -> int:
         query = (
             update(ProductModel)
             .where(ProductModel.id == product_id)
@@ -54,7 +55,7 @@ class ProductsRepo(BaseAlchemyRepo):
         await self.session.flush()
         return new_price
 
-    async def delete(self, product_id: int) -> None:
+    async def delete(self, product_id: ProductId) -> None:
         query = delete(ProductModel).where(ProductModel.id == product_id)
         await self.session.execute(query)
         await self.session.flush()

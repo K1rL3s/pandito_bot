@@ -4,6 +4,7 @@ from aiogram_dialog import DialogManager
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
+from core.ids import ProductId
 from database.models import ProductModel
 from database.repos.products import ProductsRepo
 
@@ -28,5 +29,5 @@ async def get_one_product(
     products_repo: FromDishka[ProductsRepo],
     **__: Any,
 ) -> dict[str, ProductModel | None]:
-    product_id: int = dialog_manager.dialog_data["product_id"]
+    product_id: ProductId = dialog_manager.dialog_data["product_id"]
     return {"product": await products_repo.get_one(product_id)}

@@ -7,7 +7,7 @@ def products_seller_keyboard(products: list[ProductModel]) -> InlineKeyboardMark
     product_kb = [
         [
             InlineKeyboardButton(
-                text=f"{product.name} - {product.price} Ит.",
+                text=f"{product.name} - {product.price} Пятаков",
                 callback_data=f"salesman_select_product_{product.id}",
             ),
         ]

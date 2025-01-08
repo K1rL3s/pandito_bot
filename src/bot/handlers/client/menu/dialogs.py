@@ -14,7 +14,7 @@ menu_dialog = Dialog(
     Window(
         Const("<b>Главное меню</b>\n"),
         Format("Ваш ID: <code>{user_id}</code> (/id)"),
-        Format("Баланс: {balance} <b>Ит.</b>\n"),
+        Format("Баланс: {balance} <b>Пятаков</b>\n"),
         Format("Вы - <u>{role}</u>", when=F["role"]),
         Group(
             Button(Const("🛍️ Магазин"), id=BotWindow.SHOP, on_click=on_shop),

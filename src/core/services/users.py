@@ -1,10 +1,13 @@
+from core.enums import ALL_ROLES
 from core.exceptions import (
     InvalidValue,
     InvalidValueAfterUpdate,
     NotAdmin,
     NotEnoughMoney,
+    RoleNotFound,
     UserNotFound,
 )
+from core.ids import UserId
 from database.repos.logs import LogsRepo
 from database.repos.users import UsersRepo
 
@@ -20,8 +23,8 @@ class UsersService:
 
     async def admin_update_balance(
         self,
-        slave_id: int,
-        master_id: int,
+        slave_id: UserId,
+        master_id: UserId,
         amount: int,
     ) -> int:
         user = await self.users_repo.get_by_id(slave_id)
@@ -51,8 +54,8 @@ class UsersService:
 
     async def admin_set_balance(
         self,
-        slave_id: int,
-        master_id: int,
+        slave_id: UserId,
+        master_id: UserId,
         new_balance: int,
     ) -> int:
         if new_balance < 0:
@@ -83,12 +86,12 @@ class UsersService:
 
     async def transfer_funds(
         self,
-        sender_id: int,
-        receiver_id: int,
+        sender_id: UserId,
+        receiver_id: UserId,
         amount: int,
     ) -> int:
         if amount <= 0:
-            raise InvalidValue("Нельзя передать 0 или меньше денег")
+            raise InvalidValue("Нельзя передать 0 или отрицательные Пятаки")
 
         sender = await self.users_repo.get_by_id(sender_id)
         if sender is None:
@@ -118,9 +121,23 @@ class UsersService:
 
         return new_sender_balance
 
-    async def change_stage(self, tg_id: int, stage: int) -> None:
-        user = await self.users_repo.get_by_id(tg_id)
-        if not user:
-            raise UserNotFound(tg_id)
+    async def admin_change_role(
+        self,
+        slave_id: UserId,
+        master_id: UserId,
+        role: str | None,
+    ) -> None:
+        user = await self.users_repo.get_by_id(slave_id)
+        if user is None:
+            raise UserNotFound(slave_id)
 
-        await self.users_repo.change_stage(tg_id, stage)
+        admin = await self.users_repo.get_by_id(master_id)
+        if admin is None:
+            raise UserNotFound(master_id)
+        if not admin.is_admin:
+            raise NotAdmin(master_id)
+
+        if role is not None and role not in ALL_ROLES:
+            raise RoleNotFound(role)
+
+        await self.users_repo.set_role(slave_id, role)

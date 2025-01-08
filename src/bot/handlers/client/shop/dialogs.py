@@ -17,11 +17,11 @@ view_available_products_window = Window(
         "Список товаров 🛍️\n\n"
         "В наличии <b>{products_len}</b> наименований "
         "в количестве <b>{total_stock}</b> штук\n"
-        "Баланс: {middleware_data[user].balance} Ит.",
+        "Баланс: {middleware_data[user].balance} Пятаков",
     ),
     ScrollingGroup(
         Select(
-            Format("{item.name} — {item.price} Ит."),
+            Format("{item.name} — {item.price} Пятаков"),
             id="products_select",
             item_id_getter=operator.attrgetter("id"),
             items="products",

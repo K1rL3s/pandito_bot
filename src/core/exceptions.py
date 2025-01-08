@@ -1,3 +1,6 @@
+from core.ids import ProductId, UserId
+
+
 class ServiceException(Exception):
     def __init__(self, message: str) -> None:
         self.message = message
@@ -23,13 +26,18 @@ class EntityNotFound(ServiceException):
 
 
 class UserNotFound(EntityNotFound):
-    def __init__(self, user_id: int) -> None:
+    def __init__(self, user_id: UserId) -> None:
         self.message = f"Пользователь с айди {user_id} не найден"
 
 
 class ProductNotFound(EntityNotFound):
-    def __init__(self, product_id: int) -> None:
+    def __init__(self, product_id: ProductId) -> None:
         self.message = f"Товар с айди {product_id} не найден"
+
+
+class RoleNotFound(EntityNotFound):
+    def __init__(self, role: str) -> None:
+        self.message = f'Роль "{role}" не найдена'
 
 
 class NotEnoughStock(ServiceException):
@@ -43,7 +51,7 @@ class NotEnoughStock(ServiceException):
 class NotEnoughMoney(ServiceException):
     def __init__(self, current_balance: int, excepted_balance: int) -> None:
         self.message = (
-            "Недостаточно коинов на балансе.\n"
+            "Недостаточно Пятаков на балансе.\n"
             f"Текущее: {current_balance}, ожидаемое: {excepted_balance}"
         )
 
@@ -61,5 +69,5 @@ class NotEnoughRights(ServiceException):
 
 
 class NotAdmin(NotEnoughRights):
-    def __init__(self, user_id: int) -> None:
+    def __init__(self, user_id: UserId) -> None:
         self.message = f"Пользователь с айди {user_id} не является админом"

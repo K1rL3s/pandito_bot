@@ -89,7 +89,7 @@ async def admin_list_products(
     product_list = "\n".join(
         [
             f"ID: {product.id}, Название: {product.name}, "
-            f"Цена: {product.price} Ит., Остаток: {product.stock}"
+            f"Цена: {product.price} Пятаков, Остаток: {product.stock}"
             for product in products
         ],
     )

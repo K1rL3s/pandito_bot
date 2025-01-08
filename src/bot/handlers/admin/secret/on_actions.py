@@ -5,6 +5,7 @@ from aiogram_dialog.widgets.kbd import Button
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
+from core.ids import SecretId
 from core.services.secrets import SecretsService
 from database.repos.secrets import SecretsRepo
 
@@ -44,7 +45,7 @@ async def on_confirm_delete_secret(
     dialog_manager: DialogManager,
     secrets_repo: FromDishka[SecretsRepo],
 ) -> None:
-    secret_id: int = dialog_manager.dialog_data["secret_id"]
+    secret_id: SecretId = dialog_manager.dialog_data["secret_id"]
     await secrets_repo.delete(secret_id)
     await dialog_manager.start(state=ViewSecretsStates.list)
 

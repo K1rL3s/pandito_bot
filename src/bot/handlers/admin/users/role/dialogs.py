@@ -1,36 +1,46 @@
+import operator
+
 from aiogram_dialog import Dialog, Window
-from aiogram_dialog.widgets.kbd import Back, Button, Group, Row
+from aiogram_dialog.widgets.kbd import Back, Button, Group, Row, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
 from bot.dialogs.on_actions import on_start_update_dialog_data
-from core.enums import RightsRole
 
 from ..getters import user_short_link
 from ..utils import _UserIdNameText, on_go_view_user
+from .getters import get_roles
+from .on_actions import on_role_confirm, on_role_selected
 from .states import RoleUserStates
 
 user_role_window = Window(
     _UserIdNameText,
     Group(
-        *[Button(Const(role), id=f"role_{role}") for role in RightsRole.values()],
+        Select(
+            Format("{item[1]}"),
+            id="select_roles",
+            item_id_getter=operator.itemgetter(0),
+            items="roles",
+            type_factory=int,
+            on_click=on_role_selected,
+        ),
         width=2,
     ),
     Button(Const("⏪ Юзер"), id="back", on_click=on_go_view_user),
     GoToAdminPanelButton(),
     GoToMenuButton(),
-    getter=user_short_link,
+    getter=[user_short_link, get_roles],
     state=RoleUserStates.select,
 )
 
 set_role_window = Window(
     Format(
-        "Уверены, что хотите установить роль {dialog_manager[dialog_data][new_role]} "
+        'Уверены, что хотите установить роль "{dialog_data[new_role]}" '
         "пользователю {view_user.id} - {view_user.name}?",
     ),
     Row(
         Back(Const("⏪ Роли")),
-        Button(Const("✅ Подтверждаю"), id="confirm", on_click=None),
+        Button(Const("✅ Подтверждаю"), id="confirm", on_click=on_role_confirm),
     ),
     GoToAdminPanelButton(),
     GoToMenuButton(),

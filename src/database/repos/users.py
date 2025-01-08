@@ -1,5 +1,6 @@
 from sqlalchemy import select, update
 
+from core.ids import UserId
 from database.models import UserModel
 from database.repos.base import BaseAlchemyRepo
 
@@ -7,7 +8,7 @@ from database.repos.base import BaseAlchemyRepo
 class UsersRepo(BaseAlchemyRepo):
     async def create(
         self,
-        tg_id: int,
+        tg_id: UserId,
         name: str = "",
         balance: int = 0,
         role: str | None = None,
@@ -17,14 +18,14 @@ class UsersRepo(BaseAlchemyRepo):
         await self.session.flush()
         return user
 
-    async def update(self, tg_id: int, name: str, role: str | None) -> None:
+    async def update(self, tg_id: UserId, name: str, role: str | None) -> None:
         query = (
             update(UserModel).where(UserModel.id == tg_id).values(name=name, role=role)
         )
         await self.session.execute(query)
         await self.session.flush()
 
-    async def get_by_id(self, tg_id: int) -> UserModel | None:
+    async def get_by_id(self, tg_id: UserId) -> UserModel | None:
         query = select(UserModel).where(UserModel.id == tg_id)
         return await self.session.scalar(query)
 
@@ -40,35 +41,40 @@ class UsersRepo(BaseAlchemyRepo):
         )
         return list(await self.session.scalars(query))
 
-    async def set_balance(self, tg_id: int, new_balance: int) -> None:
+    async def set_balance(self, tg_id: UserId, new_balance: int) -> None:
         query = (
             update(UserModel).where(UserModel.id == tg_id).values(balance=new_balance)
         )
         await self.session.execute(query)
         await self.session.flush()
 
-    async def change_stage(self, tg_id: int, stage: int) -> None:
+    async def change_stage(self, tg_id: UserId, stage: int) -> None:
         query = update(UserModel).where(UserModel.id == tg_id).values(stage=stage)
         await self.session.execute(query)
         await self.session.flush()
 
-    async def is_admin(self, tg_id: int) -> bool:
+    async def is_admin(self, tg_id: UserId) -> bool:
         user = await self.get_by_id(tg_id)
         return user.is_admin if user else False
         # return user and user.is_admin
 
-    async def change_active(self, tg_id: int, is_active: bool) -> None:
+    async def change_active(self, tg_id: UserId, is_active: bool) -> None:
         query = (
             update(UserModel).where(UserModel.id == tg_id).values(is_active=is_active)
         )
         await self.session.execute(query)
         await self.session.flush()
 
-    async def set_qrcode_image_id(self, tg_id: int, qrcode_image_id: str) -> None:
+    async def set_qrcode_image_id(self, tg_id: UserId, qrcode_image_id: str) -> None:
         query = (
             update(UserModel)
             .where(UserModel.id == tg_id)
             .values(qrcode_image_id=qrcode_image_id)
         )
+        await self.session.execute(query)
+        await self.session.flush()
+
+    async def set_role(self, tg_id: UserId, role: str | None) -> None:
+        query = update(UserModel).where(UserModel.id == tg_id).values(role=role)
         await self.session.execute(query)
         await self.session.flush()

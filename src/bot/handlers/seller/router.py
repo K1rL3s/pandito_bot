@@ -80,7 +80,7 @@ async def salesman_buyer_id_handler(
         await products_service.buy_product(buyer.id, product_id, 1)
         text = (
             f"Успех! {buyer.name} ({buyer.id}) купил {product.name} "
-            f"за {product.price} Ит."
+            f"за {product.price} Пятаков"
         )
 
     keyboard = InlineKeyboardMarkup(

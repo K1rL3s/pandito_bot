@@ -50,7 +50,7 @@ async def amount_input_handler(
     user: UserModel = dialog_manager.middleware_data["user"]
 
     if user.balance < amount:
-        text = "У вас недостаточно коинов для перевода, введите другую сумму"
+        text = "У вас недостаточно Пятаков для перевода, введите другую сумму"
         await message.answer(text=text)
         return
 
@@ -60,7 +60,7 @@ async def amount_input_handler(
     with contextlib.suppress(TelegramAPIError):  # TODO сделать норм
         await message.bot.send_message(
             chat_id=receiver_id,
-            text=f"Вам перевели {amount} Ит.!",
+            text=f"Вам перевели {amount} Пятаков!",
         )
 
     text = "Операция прошла успешно!"

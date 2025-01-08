@@ -1,0 +1,34 @@
+from aiogram.types import CallbackQuery
+from aiogram_dialog import DialogManager
+from aiogram_dialog.widgets.kbd import Button
+from dishka import FromDishka
+from dishka.integrations.aiogram_dialog import inject
+
+from core.enums import ALL_ROLES
+from core.services.users import UsersService
+from database.models import UserModel
+
+
+async def on_role_selected(
+    _: CallbackQuery,
+    __: Button,
+    dialog_manager: DialogManager,
+    item_id: int,
+) -> None:
+    role = ALL_ROLES[item_id][1]
+    dialog_manager.dialog_data["new_role"] = role
+    await dialog_manager.next()
+
+
+@inject
+async def on_role_confirm(
+    _: CallbackQuery,
+    __: Button,
+    dialog_manager: DialogManager,
+    users_service: FromDishka[UsersService],
+) -> None:
+    role: str = dialog_manager.dialog_data["new_role"]
+    view_user: UserModel = dialog_manager.dialog_data["view_user"]
+    admin: UserModel = dialog_manager.middleware_data["user"]
+    await users_service.admin_change_role(view_user.id, admin.id, role)
+    await dialog_manager.next()

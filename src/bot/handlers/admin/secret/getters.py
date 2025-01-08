@@ -4,6 +4,7 @@ from aiogram_dialog import DialogManager
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
+from core.ids import SecretId
 from database.repos.secrets import SecretsRepo
 
 
@@ -23,11 +24,7 @@ async def get_one_secret(
     secrets_repo: FromDishka[SecretsRepo],
     **__: Any,
 ) -> dict[str, Any]:
-    if "secret_id" in dialog_manager.dialog_data:
-        secret_id: int = dialog_manager.dialog_data["secret_id"]
-    else:
-        secret_id: int = dialog_manager.start_data["secret_id"]
-        dialog_manager.dialog_data["secret_id"] = secret_id
+    secret_id: SecretId = dialog_manager.dialog_data["secret_id"]
 
     secret = await secrets_repo.get_by_id(secret_id)
     total_activations = await secrets_repo.total_activations(secret_id)

@@ -5,6 +5,7 @@ from core.exceptions import (
     ProductNotFound,
     UserNotFound,
 )
+from core.ids import ProductId, UserId
 from database.repos.logs import LogsRepo
 from database.repos.products import ProductsRepo
 from database.repos.purchases import PurchasesRepo
@@ -24,7 +25,12 @@ class ProductsService:
         self.purchases_repo = purchases_repo
         self.logs_repo = logs_repo
 
-    async def buy_product(self, user_id: int, product_id: int, quantity: int) -> int:
+    async def buy_product(
+        self,
+        user_id: UserId,
+        product_id: ProductId,
+        quantity: int,
+    ) -> int:
         product = await self.products_repo.get_one(product_id)
         if product is None:
             raise ProductNotFound(product_id)
@@ -55,7 +61,7 @@ class ProductsService:
 
         return new_balance
 
-    async def decrement_stock(self, product_id: int, quantity: int) -> int:
+    async def decrement_stock(self, product_id: ProductId, quantity: int) -> int:
         if quantity <= 0:
             raise InvalidValue(
                 "Нельзя уменьшить кол-во товара на отрицательное значение "
@@ -74,7 +80,7 @@ class ProductsService:
 
         return new_stock
 
-    async def set_stock(self, product_id: int, new_stock: int) -> int:
+    async def set_stock(self, product_id: ProductId, new_stock: int) -> int:
         if new_stock < 0:
             raise InvalidValue("Кол-во товара не может быть отрицательным")
 
@@ -84,7 +90,7 @@ class ProductsService:
 
         return await self.products_repo.set_stock(product_id, new_stock)
 
-    async def set_price(self, product_id: int, new_price: int) -> int:
+    async def set_price(self, product_id: ProductId, new_price: int) -> int:
         if new_price <= 0:
             raise InvalidValue("Цена не может быть отрицательной")
 
