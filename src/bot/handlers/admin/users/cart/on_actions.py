@@ -4,15 +4,8 @@ from aiogram_dialog.widgets.kbd import Button
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
-from database.repos.purchases import PurchasesRepo
-
-
-async def on_clear_cart(
-    _: CallbackQuery,
-    __: Button,
-    dialog_manager: DialogManager,
-) -> None:
-    pass
+from core.services.purchases import PurchasesService
+from database.models import UserModel
 
 
 @inject
@@ -20,6 +13,9 @@ async def on_clear_cart_confirm(
     _: CallbackQuery,
     __: Button,
     dialog_manager: DialogManager,
-    purhcases_repo: FromDishka[PurchasesRepo],
+    purhcases_service: FromDishka[PurchasesService],
 ) -> None:
-    pass
+    view_user: UserModel = dialog_manager.dialog_data["view_user"]
+    admin: UserModel = dialog_manager.middleware_data["user"]
+    await purhcases_service.clear_cart(view_user.id, admin.id)
+    await dialog_manager.next()

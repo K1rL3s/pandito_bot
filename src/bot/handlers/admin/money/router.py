@@ -17,7 +17,7 @@ async def admin_update_money(
     if command.args and len(command.args.split()) == 2:
         args = command.args.split()
         user_id, amount = int(args[0]), int(args[1])
-        await users_service.admin_update_balance(user_id, message.from_user.id, amount)
+        await users_service.update_balance(user_id, message.from_user.id, amount)
         await message.answer(f"Добавлено {amount} пользователю {user_id}")
     else:
         await message.answer("Формат: /money <user_id> <amount>", parse_mode=None)

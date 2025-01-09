@@ -1,3 +1,4 @@
+from core.enums import RightsRole
 from core.ids import ProductId, UserId
 
 
@@ -68,6 +69,11 @@ class NotEnoughRights(ServiceException):
     pass
 
 
-class NotAdmin(NotEnoughRights):
+class NotRightRole(NotEnoughRights):
+    def __init__(self, user_id: UserId, role: RightsRole) -> None:
+        self.message = f"Пользователь с айди {user_id} не является {role}"
+
+
+class NotAdmin(NotRightRole):
     def __init__(self, user_id: UserId) -> None:
-        self.message = f"Пользователь с айди {user_id} не является админом"
+        super().__init__(user_id, RightsRole.ADMIN)

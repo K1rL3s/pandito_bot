@@ -2,12 +2,12 @@ from core.enums import ALL_ROLES
 from core.exceptions import (
     InvalidValue,
     InvalidValueAfterUpdate,
-    NotAdmin,
     NotEnoughMoney,
     RoleNotFound,
     UserNotFound,
 )
 from core.ids import UserId
+from core.services.roles import RolesService
 from database.repos.logs import LogsRepo
 from database.repos.users import UsersRepo
 
@@ -17,11 +17,13 @@ class UsersService:
         self,
         users_repo: UsersRepo,
         logs_repo: LogsRepo,
+        roles_service: RolesService,
     ) -> None:
         self.users_repo = users_repo
         self.logs_repo = logs_repo
+        self.roles_service = roles_service
 
-    async def admin_update_balance(
+    async def update_balance(
         self,
         slave_id: UserId,
         master_id: UserId,
@@ -31,11 +33,7 @@ class UsersService:
         if user is None:
             raise UserNotFound(slave_id)
 
-        admin = await self.users_repo.get_by_id(master_id)
-        if admin is None:
-            raise UserNotFound(master_id)
-        if not admin.is_admin:
-            raise NotAdmin(master_id)
+        await self.roles_service.is_admin(master_id)
 
         if user.balance + amount < 0:  # если отнимаем
             raise InvalidValueAfterUpdate(
@@ -52,7 +50,7 @@ class UsersService:
 
         return new_balance
 
-    async def admin_set_balance(
+    async def set_balance(
         self,
         slave_id: UserId,
         master_id: UserId,
@@ -65,11 +63,7 @@ class UsersService:
         if user is None:
             raise UserNotFound(slave_id)
 
-        admin = await self.users_repo.get_by_id(master_id)
-        if admin is None:
-            raise UserNotFound(master_id)
-        if not admin.is_admin:
-            raise NotAdmin(master_id)
+        await self.roles_service.is_admin(master_id)
 
         await self.users_repo.set_balance(slave_id, new_balance)
 
@@ -121,7 +115,7 @@ class UsersService:
 
         return new_sender_balance
 
-    async def admin_change_role(
+    async def change_role(
         self,
         slave_id: UserId,
         master_id: UserId,
@@ -131,11 +125,7 @@ class UsersService:
         if user is None:
             raise UserNotFound(slave_id)
 
-        admin = await self.users_repo.get_by_id(master_id)
-        if admin is None:
-            raise UserNotFound(master_id)
-        if not admin.is_admin:
-            raise NotAdmin(master_id)
+        await self.roles_service.is_admin(master_id)
 
         if role is not None and role not in ALL_ROLES:
             raise RoleNotFound(role)

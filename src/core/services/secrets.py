@@ -1,7 +1,8 @@
 from sqlalchemy.exc import IntegrityError
 
-from core.exceptions import InvalidValue, NotAdmin, SecretAlreadyExists, UserNotFound
+from core.exceptions import InvalidValue, SecretAlreadyExists, UserNotFound
 from core.ids import UserId
+from core.services.roles import RolesService
 from database.repos.logs import LogsRepo
 from database.repos.secrets import SecretsRepo
 from database.repos.users import UsersRepo
@@ -13,10 +14,12 @@ class SecretsService:
         secrets_repo: SecretsRepo,
         users_repo: UsersRepo,
         logs_repo: LogsRepo,
+        role_service: RolesService,
     ) -> None:
         self.secrets_repo = secrets_repo
         self.users_repo = users_repo
         self.logs_repo = logs_repo
+        self.role_service = role_service
 
     async def reward_for_secret(self, user_id: UserId, phrase: str) -> int | None:
         user = await self.users_repo.get_by_id(user_id)
@@ -53,11 +56,7 @@ class SecretsService:
         activation_limit: int,
         creator_id: int,
     ) -> int:
-        creator = await self.users_repo.get_by_id(creator_id)
-        if creator is None:
-            raise UserNotFound(creator_id)
-        if not creator.is_admin:
-            raise NotAdmin(creator_id)
+        await self.role_service.is_admin(creator_id)
 
         if not phrase:
             raise InvalidValue("Секретная фраза не может быть пустой")

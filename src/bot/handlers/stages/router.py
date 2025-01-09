@@ -81,7 +81,7 @@ async def stage_reward_handler(
     amount = int(callback.data.split("_")[1])
     participant_id = int(data["participant_id"])
 
-    await users_service.admin_update_balance(participant_id, user.id, amount)
+    await users_service.update_balance(participant_id, user.id, amount)
 
     text = f"Участнику с id {participant_id} начислено {amount} Пятаков"
     keyboard = InlineKeyboardMarkup(

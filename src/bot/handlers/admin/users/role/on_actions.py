@@ -30,5 +30,5 @@ async def on_role_confirm(
     role: str = dialog_manager.dialog_data["new_role"]
     view_user: UserModel = dialog_manager.dialog_data["view_user"]
     admin: UserModel = dialog_manager.middleware_data["user"]
-    await users_service.admin_change_role(view_user.id, admin.id, role)
+    await users_service.change_role(view_user.id, admin.id, role)
     await dialog_manager.next()
