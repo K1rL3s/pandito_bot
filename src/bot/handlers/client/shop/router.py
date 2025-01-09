@@ -11,6 +11,4 @@ router = Router(name=__file__)
 
 @router.message(Command(SlashCommand.SHOP))
 async def open_shop_handler(message: Message, dialog_manager: DialogManager) -> None:
-    await dialog_manager.start(
-        state=ShopStates.list,
-    )
+    await dialog_manager.start(state=ShopStates.list)

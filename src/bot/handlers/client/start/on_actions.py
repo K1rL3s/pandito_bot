@@ -7,22 +7,22 @@ from aiogram_dialog.widgets.kbd import Button
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
-from bot.handlers.client.start.states import StartStates
 from bot.stickers import PANDA_NICE
 from core.enums import RightsRole
 from core.ids import UserId
 from database.repos.users import UsersRepo
 
+from ..menu.states import MenuStates
+from .states import StartStates
+
 SUCCESS_TEXT = """
 Вы успешно зарегистрировались! 🎉\n\n<b>Ваш id: <code>{user_id}</code></b>
-
-Теперь вы можете вызывать <b>меню</b> командой <i>/menu</i> (или <i>/start</i>)
 """.strip()
 
 
 async def name_handler(
     message: Message,
-    message_input: MessageInput,
+    _: MessageInput,
     dialog_manager: DialogManager,
 ) -> None:
     dialog_manager.dialog_data["retry"] = True
@@ -38,7 +38,7 @@ async def name_handler(
 @inject
 async def register_confirm(
     callback: CallbackQuery,
-    button: Button,
+    _: Button,
     dialog_manager: DialogManager,
     users_repo: FromDishka[UsersRepo],
 ) -> None:
@@ -51,7 +51,7 @@ async def register_confirm(
 
     await callback.message.answer_sticker(PANDA_NICE)
     await callback.message.answer(text=SUCCESS_TEXT.format(user_id=user_id))
-    await dialog_manager.done()
+    await dialog_manager.start(state=MenuStates.menu)
 
 
 async def register_disconfirm(

@@ -5,7 +5,7 @@ from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const
 
-from .states import ViewSecretsStates
+from .view.states import ViewSecretsStates
 
 
 class GoToSecretsButton(Button):

@@ -1,4 +1,4 @@
-from sqlalchemy import delete, func, select, update
+from sqlalchemy import delete, select, update
 
 from core.ids import TaskId, UserId
 from database.models import TaskModel, UsersToTasksModel
@@ -16,14 +16,17 @@ class TasksRepo(BaseAlchemyRepo):
 
     async def create(
         self,
-        text: str,
+        title: str,
+        description: str,
         reward: int,
-        activation_limit: int,
+        end_phrase: str,
     ) -> TaskModel:
         task = TaskModel(
-            text=text,
+            title=title,
+            description=description,
             reward=reward,
-            activation_limit=activation_limit,
+            end_phrase=end_phrase,
+            status=True,
         )
         self.session.add(task)
         await self.session.flush()
@@ -34,33 +37,21 @@ class TasksRepo(BaseAlchemyRepo):
         await self.session.execute(query)
         await self.session.flush()
 
-    async def is_activation_available(
-        self,
-        task_id: TaskId,
-        activation_limit: int | None = None,
-    ) -> bool:
-        activations = await self.total_activations(task_id)
-
-        if activation_limit is None:
-            task = await self.get_by_id(task_id)
-            activation_limit = task.activation_limit
-
-        return activations < activation_limit
-
-    async def total_activations(self, task_id: TaskId) -> int:
-        query = select(
-            func.count(UsersToTasksModel.created_at),
-        ).where(
-            UsersToTasksModel.task_id == task_id,
-        )
-        return await self.session.scalar(query)
+    async def is_available(self, task_id: TaskId) -> bool:
+        task = await self.get_by_id(task_id)
+        return task and task.status
 
     async def link_user_to_task(self, user_id: UserId, task_id: TaskId) -> None:
         user_to_task = UsersToTasksModel(user_id=user_id, task_id=task_id)
         self.session.add(user_to_task)
         await self.session.flush()
 
-    async def set_task_status(
+    async def set_status(self, task_id: TaskId, status: bool) -> None:
+        query = update(TaskModel).where(TaskModel.id == task_id).values(status=status)
+        await self.session.execute(query)
+        await self.session.flush()
+
+    async def set_users_to_tasks_status(
         self,
         user_id: UserId,
         task_id: TaskId,
@@ -88,3 +79,12 @@ class TasksRepo(BaseAlchemyRepo):
         )
         relation = await self.session.scalar(query)
         return relation.status
+
+    async def set_qrcode_image_id(self, task_id: TaskId, image_id: str) -> None:
+        query = (
+            update(TaskModel)
+            .where(TaskModel.id == task_id)
+            .values(qrcode_image_id=image_id)
+        )
+        await self.session.execute(query)
+        await self.session.flush()

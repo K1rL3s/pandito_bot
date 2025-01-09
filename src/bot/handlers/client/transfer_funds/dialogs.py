@@ -31,7 +31,7 @@ transfer_wait_amount_window = Window(
     MessageInput(
         amount_input_handler,
         content_types=ContentType.TEXT,
-        filter=F.text.regexp(r"^\d+$") & F.text.cast(int) > 0,
+        filter=F.text.isdigit(),
     ),
     state=TransferFundsStates.amount,
 )

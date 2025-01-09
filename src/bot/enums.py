@@ -14,6 +14,7 @@ class SlashCommand(StrEnum):
     SECRETS = "secrets"
     CANCEL = "cancel"
     ID = "id"
+    TASKS = "tasks"
 
 
 class TextCommand(StrEnum):

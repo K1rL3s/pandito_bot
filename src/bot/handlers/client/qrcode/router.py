@@ -1,14 +1,12 @@
 from aiogram import Bot, Router
-from aiogram.filters import Command, StateFilter
-from aiogram.types import (
-    BufferedInputFile,
-    KeyboardButton,
-    Message,
-    ReplyKeyboardMarkup,
-)
+from aiogram.filters import Command
+from aiogram.types import Message
+from aiogram_dialog import DialogManager
 from dishka import FromDishka
 
 from bot.enums import SlashCommand
+from bot.handlers.client.menu.states import MenuStates
+from bot.utils.qrcode import send_and_save_user_qrcode
 from core.services.qrcodes import QRCodeService
 from database.models import UserModel
 from database.repos.users import UsersRepo
@@ -16,10 +14,11 @@ from database.repos.users import UsersRepo
 router = Router(name=__file__)
 
 
-@router.message(Command(SlashCommand.ID), StateFilter(None))
+@router.message(Command(SlashCommand.ID))
 async def show_my_id_as_qrcode(
     message: Message,
     bot: Bot,
+    dialog_manager: DialogManager,
     user: UserModel,
     qrcode_service: FromDishka[QRCodeService],
     users_repo: FromDishka[UsersRepo],
@@ -28,29 +27,18 @@ async def show_my_id_as_qrcode(
         "Покажи это организатору =)\n\n"
         f"ID: <code>{message.from_user.id}</code> ({message.from_user.id:_})\n\n"
     )
-    keyboard = ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text="/start")]],
-        resize_keyboard=True,
-        one_time_keyboard=True,
-    )
 
     if user.qrcode_image_id:
-        await message.answer_photo(
-            photo=user.qrcode_image_id,
-            caption=text,
-            reply_markup=keyboard,
-        )
+        await message.answer_photo(photo=user.qrcode_image_id, caption=text)
+        await dialog_manager.start(state=MenuStates.menu)
         return
 
-    bot_name = (await bot.me()).username
-    qrcode = qrcode_service.user_id_qrcode(bot_name, user.id)
-    photo = BufferedInputFile(qrcode.getvalue(), f"qrcode_{user.id}.png")
-
-    bot_message = await message.answer_photo(
-        photo=photo,
+    await send_and_save_user_qrcode(
+        qrcode_service=qrcode_service,
+        users_repo=users_repo,
         caption=text,
-        reply_markup=keyboard,
+        bot=bot,
+        save_to=user.id,
+        send_to=user.id,
     )
-
-    qrcode_image_id = bot_message.photo[-1].file_id
-    await users_repo.set_qrcode_image_id(user.id, qrcode_image_id)
+    await dialog_manager.start(state=MenuStates.menu)

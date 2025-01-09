@@ -1,4 +1,7 @@
 from enum import Enum
+from typing import TypeVar
+
+T = TypeVar("T")
 
 
 class StrEnum(str, Enum):
@@ -8,5 +11,5 @@ class StrEnum(str, Enum):
 
 class ValuesEnum(Enum):
     @classmethod
-    def values(cls) -> list[str]:
+    def values(cls) -> list[T]:
         return [e.value for e in cls]

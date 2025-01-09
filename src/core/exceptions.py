@@ -70,7 +70,7 @@ class NotEnoughRights(ServiceException):
 
 
 class NotRightRole(NotEnoughRights):
-    def __init__(self, user_id: UserId, role: RightsRole) -> None:
+    def __init__(self, user_id: UserId, role: RightsRole | None) -> None:
         self.message = f"Пользователь с айди {user_id} не является {role}"
 
 

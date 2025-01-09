@@ -4,14 +4,14 @@ from aiogram.types import Message
 from aiogram_dialog import DialogManager
 
 from bot.enums import SlashCommand
-from bot.handlers.admin.secret.states import ViewSecretsStates
+from bot.handlers.admin.tasks.view.states import ViewTasksStates
 
 router = Router(name=__file__)
 
 
-@router.message(Command(SlashCommand.SECRETS))
-async def list_secrets_handler(
+@router.message(Command(SlashCommand.TASKS))
+async def list_tasks_handler(
     message: Message,
     dialog_manager: DialogManager,
 ) -> None:
-    await dialog_manager.start(state=ViewSecretsStates.list)
+    await dialog_manager.start(state=ViewTasksStates.list)

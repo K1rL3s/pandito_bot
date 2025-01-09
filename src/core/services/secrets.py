@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
 from core.exceptions import InvalidValue, SecretAlreadyExists, UserNotFound
-from core.ids import UserId
+from core.ids import SecretId, UserId
 from core.services.roles import RolesService
 from database.repos.logs import LogsRepo
 from database.repos.secrets import SecretsRepo
@@ -49,13 +49,13 @@ class SecretsService:
 
         return secret.reward
 
-    async def create_secret(
+    async def create(
         self,
         phrase: str,
         reward: int,
         activation_limit: int,
         creator_id: int,
-    ) -> int:
+    ) -> SecretId:
         await self.role_service.is_admin(creator_id)
 
         if not phrase:
@@ -71,3 +71,7 @@ class SecretsService:
             raise SecretAlreadyExists(phrase) from e
 
         return secret.id
+
+    async def delete(self, secret_id: SecretId, master_id: UserId) -> None:
+        await self.role_service.is_admin(master_id)
+        await self.secrets_repo.delete(secret_id)

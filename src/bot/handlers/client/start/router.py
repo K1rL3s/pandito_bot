@@ -3,8 +3,9 @@ from aiogram.filters import CommandStart, MagicData
 from aiogram.types import Message
 from aiogram_dialog import DialogManager, ShowMode
 
-from bot.handlers.client.start.states import StartStates
 from bot.stickers import PANDA_HELLO
+
+from .states import StartStates
 
 router = Router(name=__file__)
 

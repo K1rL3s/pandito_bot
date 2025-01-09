@@ -5,9 +5,10 @@ from aiogram_dialog.widgets.kbd import Back, Button, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
+from bot.filters.roles import IsAdmin
 
-from .buttons import GoToSecretsButton
-from .getters import get_all_secrets, get_one_secret
+from ..buttons import GoToSecretsButton
+from ..getters import get_all_secrets, get_one_secret
 from .on_actions import (
     on_confirm_delete_secret,
     on_create_secret,
@@ -32,7 +33,12 @@ secrets_list_window = Window(
         hide_on_single_page=True,
         id="secrets_group",
     ),
-    Button(Const("✏️ Создать секрет"), id="create_secret", on_click=on_create_secret),
+    Button(
+        Const("✏️ Создать секрет"),
+        id="create",
+        on_click=on_create_secret,
+        when=IsAdmin(),
+    ),
     GoToAdminPanelButton(),
     GoToMenuButton(),
     getter=get_all_secrets,
@@ -47,7 +53,12 @@ view_one_secret_window = Window(
         "activation_limit={secret.activation_limit}\n"
         "total_activations={total_activations}",
     ),
-    Button(Const("🗑️ Удалить"), id="delete_secret", on_click=on_delete_secret),
+    Button(
+        Const("🗑️ Удалить"),
+        id="delete",
+        on_click=on_delete_secret,
+        when=IsAdmin(),
+    ),
     Back(Const("⏪ Cекреты")),
     GoToAdminPanelButton(),
     getter=get_one_secret,
@@ -58,7 +69,7 @@ confirm_delete_secret_window = Window(
     Format("❓ Вы уверены, что хотите удалить секрет id={secret.id}? "),
     Button(
         Const("✅ Подтвердить"),
-        id="confirm_delete_secret",
+        id="confirm_delete",
         on_click=on_confirm_delete_secret,
     ),
     Back(Const("⏪ Отмена")),

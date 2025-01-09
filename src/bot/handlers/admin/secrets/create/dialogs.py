@@ -7,7 +7,7 @@ from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToAdminPanelButton
 
-from .buttons import GoToSecretsButton
+from ..buttons import GoToSecretsButton
 from .on_actions import (
     confirm_create_secret,
     secret_activation_limit_input,
@@ -32,7 +32,7 @@ secret_reward_window = Window(
     MessageInput(
         func=secret_reward_input,
         content_types=ContentType.TEXT,
-        filter=F.text.regexp(r"^\d+$") & F.text.cast(int) > 0,
+        filter=F.text.isdigit(),
     ),
     Back(Const("⏪ Шаг назад")),
     GoToSecretsButton(),
@@ -45,7 +45,7 @@ secret_activation_limit_window = Window(
     MessageInput(
         func=secret_activation_limit_input,
         content_types=ContentType.TEXT,
-        filter=F.text.regexp(r"^\d+$") & F.text.cast(int) > 0,
+        filter=F.text.isdigit(),
     ),
     Back(Const("⏪ Шаг назад")),
     GoToSecretsButton(),

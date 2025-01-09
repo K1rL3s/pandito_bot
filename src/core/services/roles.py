@@ -1,4 +1,4 @@
-from core.enums import ALL_ROLES, RightsRole
+from core.enums import RightsRole
 from core.exceptions import NotRightRole, RoleNotFound, UserNotFound
 from core.ids import UserId
 from database.repos.users import UsersRepo
@@ -25,7 +25,7 @@ class RolesService:
         if user is None:
             raise UserNotFound(user_id)
 
-        if role not in ALL_ROLES:
+        if role is not None and role not in RightsRole.values():
             raise RoleNotFound(role)
 
         if user.role == role or user.role == RightsRole.ADMIN:

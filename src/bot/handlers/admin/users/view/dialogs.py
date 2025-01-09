@@ -7,10 +7,11 @@ from aiogram_dialog.widgets.text import Const
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
 from bot.dialogs.on_actions import on_start_update_dialog_data
+from bot.filters.roles import IsAdmin, IsSeller, IsStager
 
 from ..getters import user_short_link
 from ..utils import _UserIdNameText
-from .on_actions import id_input_handler, on_check_cart, on_set_role
+from .on_actions import id_input_handler, on_check_cart, on_set_role, on_view_qrcode
 from .states import ViewUserStates
 
 wait_user_id_window = Window(
@@ -28,9 +29,29 @@ wait_user_id_window = Window(
 view_user_window = Window(
     _UserIdNameText,
     Group(
-        Button(Const("🧺 Корзина"), id="cart", on_click=on_check_cart),
-        Button(Const("💼 Задание"), id="task", on_click=None),
-        Button(Const("👨‍💼 Выдать роль"), id="role", on_click=on_set_role),
+        Button(
+            Const("🧺 Корзина"),
+            id="cart",
+            on_click=on_check_cart,
+            when=IsSeller(),
+        ),
+        Button(
+            Const("🧠 Задание"),
+            id="task",
+            on_click=None,
+            when=IsStager(),
+        ),
+        Button(
+            Const("👨‍💼 Выдать роль"),
+            id="role",
+            on_click=on_set_role,
+            when=IsAdmin(),
+        ),
+        Button(
+            Const("🖼️ Куркод"),
+            id="qrcode",
+            on_click=on_view_qrcode,
+        ),
         width=2,
     ),
     Back(Const("🔁 Ввести ID")),

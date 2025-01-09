@@ -3,11 +3,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.ids import TaskId, UserId
 from database.models import TaskModel, UserModel
-from database.models._mixins import CreatedAtMixin
+from database.models._mixins import CreatedAtMixin, UpdatedAtMixin
 from database.models.base import BaseAlchemyModel
 
 
-class UsersToTasksModel(CreatedAtMixin, BaseAlchemyModel):
+class UsersToTasksModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     __tablename__ = "users_to_tasks"
 
     user_id: Mapped[UserId] = mapped_column(ForeignKey("users.id"), primary_key=True)
