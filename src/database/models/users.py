@@ -1,8 +1,6 @@
 from sqlalchemy import BigInteger, Boolean, Integer, String
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.enums import RightsRole
 from core.ids import UserId
 from database.models._mixins import CreatedAtMixin, UpdatedAtMixin
 from database.models.base import BaseAlchemyModel
@@ -35,11 +33,3 @@ class UserModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
         "LogsModel",
         cascade="delete, delete-orphan",
     )
-
-    @hybrid_property
-    def is_admin(self) -> bool:
-        return self.role == RightsRole.ADMIN
-
-    @hybrid_property
-    def is_seller(self) -> bool:
-        return self.role == RightsRole.SELLER

@@ -10,8 +10,14 @@ from bot.dialogs.on_actions import on_start_update_dialog_data
 from bot.filters.roles import IsAdmin, IsSeller, IsStager
 
 from ..getters import user_short_link
-from ..utils import _UserIdNameText
-from .on_actions import id_input_handler, on_check_cart, on_set_role, on_view_qrcode
+from ..on_actions import _UserIdNameText
+from .on_actions import (
+    id_input_handler,
+    on_check_cart,
+    on_set_role,
+    on_view_qrcode,
+    on_view_task,
+)
 from .states import ViewUserStates
 
 wait_user_id_window = Window(
@@ -38,7 +44,7 @@ view_user_window = Window(
         Button(
             Const("🧠 Задание"),
             id="task",
-            on_click=None,
+            on_click=on_view_task,
             when=IsStager(),
         ),
         Button(

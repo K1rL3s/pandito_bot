@@ -41,9 +41,26 @@ class TasksRepo(BaseAlchemyRepo):
         task = await self.get_by_id(task_id)
         return task and task.status
 
-    async def link_user_to_task(self, user_id: UserId, task_id: TaskId) -> None:
-        user_to_task = UsersToTasksModel(user_id=user_id, task_id=task_id)
+    async def link_user_to_task(
+        self,
+        user_id: UserId,
+        task_id: TaskId,
+        status: bool = False,
+    ) -> None:
+        user_to_task = UsersToTasksModel(
+            user_id=user_id,
+            task_id=task_id,
+            status=status,
+        )
         self.session.add(user_to_task)
+        await self.session.flush()
+
+    async def unlink_user_from_task(self, user_id: UserId, task_id: TaskId) -> None:
+        query = delete(UsersToTasksModel).where(
+            UsersToTasksModel.user_id == user_id,
+            UsersToTasksModel.task_id == task_id,
+        )
+        await self.session.execute(query)
         await self.session.flush()
 
     async def set_status(self, task_id: TaskId, status: bool) -> None:
@@ -78,7 +95,7 @@ class TasksRepo(BaseAlchemyRepo):
             UsersToTasksModel.task_id == task_id,
         )
         relation = await self.session.scalar(query)
-        return relation.status
+        return relation and relation.status
 
     async def set_qrcode_image_id(self, task_id: TaskId, image_id: str) -> None:
         query = (
@@ -88,3 +105,11 @@ class TasksRepo(BaseAlchemyRepo):
         )
         await self.session.execute(query)
         await self.session.flush()
+
+    async def get_active_task(self, user_id: UserId) -> TaskModel | None:
+        subquery = select(UsersToTasksModel.task_id).where(
+            UsersToTasksModel.user_id == user_id,
+            UsersToTasksModel.status == False,  # noqa: E712
+        )
+        query = select(TaskModel).where(TaskModel.id == subquery.as_scalar())
+        return await self.session.scalar(query)

@@ -1,9 +1,9 @@
 from core.enums import RightsRole
-from core.ids import ProductId, UserId
+from core.ids import ProductId, TaskId, UserId
 
 
 class ServiceException(Exception):
-    def __init__(self, message: str) -> None:
+    def __init__(self, message: str = "-") -> None:
         self.message = message
 
     def __str__(self) -> str:
@@ -19,7 +19,7 @@ class EntityAlreadyExists(ServiceException):
 
 class SecretAlreadyExists(EntityAlreadyExists):
     def __init__(self, phrase: str) -> None:
-        self.message = f'Секрет с фразой "{phrase}" уже существует'
+        super().__init__(f'Секрет с фразой "{phrase}" уже существует')
 
 
 class EntityNotFound(ServiceException):
@@ -28,32 +28,42 @@ class EntityNotFound(ServiceException):
 
 class UserNotFound(EntityNotFound):
     def __init__(self, user_id: UserId) -> None:
-        self.message = f"Пользователь с айди {user_id} не найден"
+        super().__init__(f"Пользователь с айди {user_id} не найден")
 
 
 class ProductNotFound(EntityNotFound):
     def __init__(self, product_id: ProductId) -> None:
-        self.message = f"Товар с айди {product_id} не найден"
+        super().__init__(f"Товар с айди {product_id} не найден")
 
 
 class RoleNotFound(EntityNotFound):
     def __init__(self, role: str) -> None:
-        self.message = f'Роль "{role}" не найдена'
+        super().__init__(f'Роль "{role}" не найдена')
+
+
+class TaskNotFound(EntityNotFound):
+    def __init__(self, task_id: TaskId) -> None:
+        super().__init__(f'Задание с айди "{task_id}" не найдена')
+
+
+class ActiveTaskNotFound(EntityNotFound):
+    def __init__(self, user_id: UserId) -> None:
+        super().__init__(f'Активное задание у юзера {user_id}" не найдено')
 
 
 class NotEnoughStock(ServiceException):
     def __init__(self, current_stock: int, excepted_stock: int) -> None:
-        self.message = (
+        super().__init__(
             "Недостаточное кол-во товара.\n"
-            f"Текущее: {current_stock}, ожидаемое: {excepted_stock}"
+            f"Текущее: {current_stock}, ожидаемое: {excepted_stock}",
         )
 
 
 class NotEnoughMoney(ServiceException):
     def __init__(self, current_balance: int, excepted_balance: int) -> None:
-        self.message = (
+        super().__init__(
             "Недостаточно Пятаков на балансе.\n"
-            f"Текущее: {current_balance}, ожидаемое: {excepted_balance}"
+            f"Текущее: {current_balance}, ожидаемое: {excepted_balance}",
         )
 
 
@@ -61,7 +71,16 @@ class InvalidValue(ServiceException):
     pass
 
 
-class InvalidValueAfterUpdate(ServiceException):
+class TaskInactive(InvalidValue):
+    def __init__(self, task_id: TaskId) -> None:
+        super().__init__(f'Задание "{task_id}" неактивно')
+
+
+class WrongTaskAnswer(InvalidValue):
+    pass
+
+
+class InvalidValueAfterUpdate(InvalidValue):
     pass
 
 
@@ -71,7 +90,7 @@ class NotEnoughRights(ServiceException):
 
 class NotRightRole(NotEnoughRights):
     def __init__(self, user_id: UserId, role: RightsRole | None) -> None:
-        self.message = f"Пользователь с айди {user_id} не является {role}"
+        super().__init__(f"Пользователь с айди {user_id} не является {role}")
 
 
 class NotAdmin(NotRightRole):

@@ -3,8 +3,9 @@ from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Format
 
-from bot.handlers.admin.users.view.states import ViewUserStates
-from database.models import UserModel
+from core.ids import UserId
+
+from .view.states import ViewUserStates
 
 _UserIdNameText = Format(
     "<code>{view_user.id}</code> | <b>{view_user.name}</b> - {role}",
@@ -16,5 +17,5 @@ async def on_go_view_user(
     __: Button,
     dialog_manager: DialogManager,
 ) -> None:
-    user: UserModel = dialog_manager.dialog_data["view_user"]
-    await dialog_manager.start(state=ViewUserStates.one, data={"view_user": user})
+    user_id: UserId = dialog_manager.dialog_data["view_user_id"]
+    await dialog_manager.start(state=ViewUserStates.one, data={"view_user_id": user_id})

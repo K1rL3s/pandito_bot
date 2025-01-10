@@ -14,6 +14,7 @@ from .shop.dialogs import shop_dialog
 from .shop.router import router as products_router
 from .start.dialogs import start_dialog
 from .start.router import router as start_router
+from .task.dialogs import start_task_dialog, task_answer_dialog, view_task_dialog
 from .task.router import router as task_router
 from .transfer_funds.dialogs import transfer_dialog
 from .transfer_funds.router import router as transfer_funds_router
@@ -59,4 +60,7 @@ def include_client_dialogs(root_router: Router) -> None:
         shop_dialog,
         cart_dialog,
         transfer_dialog,
+        view_task_dialog,
+        start_task_dialog,
+        task_answer_dialog,
     )

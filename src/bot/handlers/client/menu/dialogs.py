@@ -2,7 +2,7 @@ from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.kbd import Button, Group
 from aiogram_dialog.widgets.text import Const, Format
 
-from bot.dialogs.buttons import GoToAdminPanelButton
+from bot.dialogs.buttons import GoToAdminPanelButton, GoToTaskButton
 from bot.enums import BotWindow
 from bot.filters.roles import IsWithRole
 
@@ -24,6 +24,7 @@ menu_dialog = Dialog(
                 id=BotWindow.TRANSFER,
                 on_click=on_transfer_funds,
             ),
+            GoToTaskButton(),
             Button(Const("🆘 Помощь"), id=BotWindow.HELP, on_click=on_help),
             width=2,
         ),

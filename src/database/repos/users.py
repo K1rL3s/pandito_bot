@@ -48,16 +48,6 @@ class UsersRepo(BaseAlchemyRepo):
         await self.session.execute(query)
         await self.session.flush()
 
-    async def change_stage(self, tg_id: UserId, stage: int) -> None:
-        query = update(UserModel).where(UserModel.id == tg_id).values(stage=stage)
-        await self.session.execute(query)
-        await self.session.flush()
-
-    async def is_admin(self, tg_id: UserId) -> bool:
-        user = await self.get_by_id(tg_id)
-        return user.is_admin if user else False
-        # return user and user.is_admin
-
     async def change_active(self, tg_id: UserId, is_active: bool) -> None:
         query = (
             update(UserModel).where(UserModel.id == tg_id).values(is_active=is_active)

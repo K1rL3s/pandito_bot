@@ -8,7 +8,7 @@ from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
 from bot.dialogs.on_actions import on_start_update_dialog_data
 
 from ..getters import user_short_link
-from ..utils import _UserIdNameText, on_go_view_user
+from ..on_actions import _UserIdNameText, on_go_view_user
 from .getters import get_roles
 from .on_actions import on_role_confirm, on_role_selected
 from .states import RoleUserStates
@@ -38,16 +38,15 @@ set_role_window = Window(
         'Уверены, что хотите установить роль "{dialog_data[new_role]}" '
         "пользователю {view_user.id} - {view_user.name}?",
     ),
-    Row(
-        Back(Const("⏪ Роли")),
-        Button(Const("✅ Подтверждаю"), id="confirm", on_click=on_role_confirm),
-    ),
+    Button(Const("✅ Подтвердить"), id="confirm", on_click=on_role_confirm),
+    Back(Const("⏪ Роли")),
     GoToAdminPanelButton(),
     GoToMenuButton(),
     getter=user_short_link,
     state=RoleUserStates.role,
 )
 
+# TODO убрать
 set_role_confirm = Window(
     Const("Ок!"),
     state=RoleUserStates.confirm,

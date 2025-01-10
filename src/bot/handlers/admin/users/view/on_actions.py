@@ -6,12 +6,13 @@ from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
 from bot.utils.qrcode import send_and_save_user_qrcode
+from core.ids import UserId
 from core.services.qrcodes import QRCodeService
-from database.models import UserModel
 from database.repos.users import UsersRepo
 
 from ..cart.states import CartUserStates
 from ..role.states import RoleUserStates
+from ..task.view.states import TaskUserStates
 
 
 @inject
@@ -29,17 +30,21 @@ async def id_input_handler(
         await message.reply(text=text)
         return
 
-    dialog_manager.dialog_data["view_user"] = user
+    dialog_manager.dialog_data["view_user_id"] = user.id
     await dialog_manager.next()
 
 
+@inject
 async def on_check_cart(
     _: CallbackQuery,
     __: Button,
     dialog_manager: DialogManager,
 ) -> None:
-    user: UserModel = dialog_manager.dialog_data["view_user"]
-    await dialog_manager.start(state=CartUserStates.cart, data={"view_user": user})
+    user_id: UserId = dialog_manager.dialog_data["view_user_id"]
+    await dialog_manager.start(
+        state=CartUserStates.cart,
+        data={"view_user_id": user_id},
+    )
 
 
 async def on_set_role(
@@ -47,8 +52,11 @@ async def on_set_role(
     __: Button,
     dialog_manager: DialogManager,
 ) -> None:
-    user: UserModel = dialog_manager.dialog_data["view_user"]
-    await dialog_manager.start(state=RoleUserStates.select, data={"view_user": user})
+    user_id: UserId = dialog_manager.dialog_data["view_user_id"]
+    await dialog_manager.start(
+        state=RoleUserStates.select,
+        data={"view_user_id": user_id},
+    )
 
 
 @inject
@@ -59,7 +67,8 @@ async def on_view_qrcode(
     qrcode_service: FromDishka[QRCodeService],
     users_repo: FromDishka[UsersRepo],
 ) -> None:
-    user: UserModel = dialog_manager.dialog_data["view_user"]
+    user_id: UserId = dialog_manager.dialog_data["view_user_id"]
+    user = await users_repo.get_by_id(user_id)
     text = f"ID: <code>{user.id}</code> ({user.id:_})\n\n"
     if user.qrcode_image_id:
         await callback.message.answer_photo(
@@ -79,10 +88,22 @@ async def on_view_qrcode(
     dialog_manager.show_mode = ShowMode.DELETE_AND_SEND
 
 
-async def on_check_role(
+async def on_view_role(
     _: CallbackQuery,
     __: Button,
     dialog_manager: DialogManager,
 ) -> None:
-    user: UserModel = dialog_manager.dialog_data["view_user"]
-    await dialog_manager.start(state=RoleUserStates.role, data={"view_user": user})
+    user_id: UserId = dialog_manager.dialog_data["view_user_id"]
+    await dialog_manager.start(
+        state=RoleUserStates.role,
+        data={"view_user_id": user_id},
+    )
+
+
+async def on_view_task(
+    _: CallbackQuery,
+    __: Button,
+    dialog_manager: DialogManager,
+) -> None:
+    user_id: UserId = dialog_manager.dialog_data["view_user_id"]
+    await dialog_manager.start(TaskUserStates.task, data={"view_user_id": user_id})

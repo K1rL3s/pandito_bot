@@ -46,3 +46,13 @@ async def on_go_to_products(
     from bot.handlers.client.shop.states import ShopStates
 
     await dialog_manager.start(state=ShopStates.list)
+
+
+async def on_go_to_task(
+    _: CallbackQuery,
+    __: Button,
+    dialog_manager: DialogManager,
+) -> None:
+    from bot.handlers.client.task.view.states import ViewTaskStates
+
+    await dialog_manager.start(state=ViewTaskStates.task)

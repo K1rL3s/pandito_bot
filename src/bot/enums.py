@@ -15,6 +15,7 @@ class SlashCommand(StrEnum):
     CANCEL = "cancel"
     ID = "id"
     TASKS = "tasks"
+    TASK = "task"
 
 
 class TextCommand(StrEnum):
@@ -35,3 +36,4 @@ class BotWindow(StrEnum):
     SHOP = "shop"
     CART = "cart"
     TRANSFER = "transfer"
+    TASK = "task"

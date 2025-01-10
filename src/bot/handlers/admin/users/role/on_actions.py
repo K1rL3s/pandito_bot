@@ -5,6 +5,7 @@ from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
 from core.enums import ALL_ROLES
+from core.ids import UserId
 from core.services.users import UsersService
 from database.models import UserModel
 
@@ -28,7 +29,7 @@ async def on_role_confirm(
     users_service: FromDishka[UsersService],
 ) -> None:
     role: str = dialog_manager.dialog_data["new_role"]
-    view_user: UserModel = dialog_manager.dialog_data["view_user"]
+    user_id: UserId = dialog_manager.dialog_data["view_user_id"]
     admin: UserModel = dialog_manager.middleware_data["user"]
-    await users_service.change_role(view_user.id, admin.id, role)
+    await users_service.change_role(user_id, admin.id, role)
     await dialog_manager.next()

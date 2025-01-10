@@ -12,6 +12,8 @@ class UsersToTasksModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
 
     user_id: Mapped[UserId] = mapped_column(ForeignKey("users.id"), primary_key=True)
     task_id: Mapped[TaskId] = mapped_column(ForeignKey("tasks.id"), primary_key=True)
+
+    # False - не выполнено, True - выполнено
     status: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
     user: Mapped[UserModel] = relationship(

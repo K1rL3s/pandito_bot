@@ -16,6 +16,7 @@ from .tasks.view.dialogs import view_tasks_dialog
 from .users.cart.dialogs import user_cart_dialog
 from .users.role.dialogs import user_role_dialog
 from .users.router import router as users_router
+from .users.task import cancel_task_dialog, confirm_task_dialog, view_user_task_dialog
 from .users.view.dialogs import view_user_dialog
 
 
@@ -53,6 +54,9 @@ def include_admin_dialogs(root_router: Router) -> None:
         user_role_dialog,
         view_tasks_dialog,
         create_task_dialog,
+        view_user_task_dialog,
+        cancel_task_dialog,
+        confirm_task_dialog,
     )
 
     root_router.include_router(admin_router)

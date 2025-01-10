@@ -7,8 +7,8 @@ from qrcode.main import QRCode
 
 from core.ids import TaskId, UserId
 
-_UserIdPrefix = "id_"
-_TaskIdPrefix = "task_"
+UserIdPrefix = "id_"
+TaskIdPrefix = "task_"
 
 
 class QRCodeService:
@@ -23,10 +23,10 @@ class QRCodeService:
         )
 
     def user_id_qrcode(self, user_id: UserId) -> BytesIO:
-        return self._generate_qrcode(_UserIdPrefix, user_id)
+        return self._generate_qrcode(UserIdPrefix, user_id)
 
     def task_id_qrcode(self, task_id: TaskId) -> BytesIO:
-        return self._generate_qrcode(_TaskIdPrefix, task_id)
+        return self._generate_qrcode(TaskIdPrefix, task_id)
 
     def _generate_qrcode(self, prefix: str, data: Any) -> BytesIO:
         self.qr.clear()

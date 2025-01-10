@@ -1,9 +1,15 @@
 from typing import Any
 
+from aiogram import F
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const
 
-from bot.dialogs.on_actions import on_empty_button, on_go_to_admin_panel, on_go_to_menu
+from bot.dialogs.on_actions import (
+    on_empty_button,
+    on_go_to_admin_panel,
+    on_go_to_menu,
+    on_go_to_task,
+)
 
 
 class GoToMenuButton(Button):
@@ -23,6 +29,16 @@ class GoToAdminPanelButton(Button):
             id="to_admin_panel",
             on_click=on_go_to_admin_panel,
             **kwargs,
+        )
+
+
+class GoToTaskButton(Button):
+    def __init__(self, text: str = "🧠 Задание") -> None:
+        super().__init__(
+            text=Const(text),
+            id="to_task",
+            on_click=on_go_to_task,
+            when=F["task"].is_not(None),
         )
 
 

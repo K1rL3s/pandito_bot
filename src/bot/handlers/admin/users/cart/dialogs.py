@@ -6,7 +6,7 @@ from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
 from bot.dialogs.on_actions import on_start_update_dialog_data
 
 from ..getters import user_short_link
-from ..utils import _UserIdNameText, on_go_view_user
+from ..on_actions import _UserIdNameText, on_go_view_user
 from .getters import get_view_user_cart
 from .on_actions import on_clear_cart_confirm
 from .states import CartUserStates
@@ -15,7 +15,7 @@ user_cart_window = Window(
     _UserIdNameText,
     Format("Куплено {total_products} наименований в количестве {total_purchases} штук"),
     Format("\n{formated_info}"),
-    Button(Const("Очистить корзину"), id="clear_cart", on_click=Next()),
+    Button(Const("🗑️ Очистить корзину"), id="clear_cart", on_click=Next()),
     Button(Const("⏪ Юзер"), id="back", on_click=on_go_view_user),
     GoToAdminPanelButton(),
     GoToMenuButton(),
@@ -25,11 +25,12 @@ user_cart_window = Window(
 
 clear_cart_window = Window(
     Format(
-        "Уверены, что хотите очистить корзину пользователю {view_user.id} - {view_user.name}?",
+        "Уверены, что хотите очистить корзину "
+        "пользователю {view_user.id} - {view_user.name}?",
     ),
     Row(
         Back(Const("⏪ Корзина")),
-        Button(Const("✅ Подтверждаю"), id="confirm", on_click=on_clear_cart_confirm),
+        Button(Const("✅ Подтвердить"), id="confirm", on_click=on_clear_cart_confirm),
     ),
     GoToAdminPanelButton(),
     GoToMenuButton(),
@@ -37,6 +38,7 @@ clear_cart_window = Window(
     state=CartUserStates.clear,
 )
 
+# TODO убрать
 clear_cart_confirm = Window(
     Const("Ок!"),
     state=CartUserStates.confirm,

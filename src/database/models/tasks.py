@@ -27,6 +27,8 @@ class TaskModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     description: Mapped[str] = mapped_column(String(2048), nullable=False)
     reward: Mapped[int] = mapped_column(Integer, nullable=False)
     end_phrase: Mapped[str] = mapped_column(String(256), nullable=False)
+
+    # True - можно начать выполнять, False - нельзя
     status: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     qrcode_image_id: Mapped[str] = mapped_column(String(128), nullable=True)
