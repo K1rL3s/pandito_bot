@@ -8,6 +8,7 @@ from bot.filters.roles import IsAdmin, IsSeller, IsStager, IsWithRole
 from .on_actions import (
     on_go_to_broadcast,
     on_go_to_secrets,
+    on_go_to_shop,
     on_go_to_tasks,
     on_go_to_view_users,
 )
@@ -31,6 +32,7 @@ admin_panel_window = Window(
         Button(
             Const("🛍️ Товары"),
             id="products",
+            on_click=on_go_to_shop,
             when=IsSeller(),
         ),
         Button(

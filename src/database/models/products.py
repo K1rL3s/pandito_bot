@@ -16,6 +16,8 @@ class ProductModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     price: Mapped[int] = mapped_column(Integer, nullable=False)
     stock: Mapped[int] = mapped_column(Integer, nullable=False)
 
+    qrcode_image_id: Mapped[str] = mapped_column(String(128), nullable=True)
+
     purchases: Mapped[list[PurchaseModel]] = relationship(
         "PurchaseModel",
         cascade="delete, delete-orphan",

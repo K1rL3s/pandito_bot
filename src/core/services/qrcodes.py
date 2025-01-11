@@ -5,10 +5,11 @@ from qrcode.constants import ERROR_CORRECT_L
 from qrcode.image.pure import PyPNGImage
 from qrcode.main import QRCode
 
-from core.ids import TaskId, UserId
+from core.ids import ProductId, TaskId, UserId
 
 UserIdPrefix = "id_"
 TaskIdPrefix = "task_"
+ProductIdPrefix = "product_"
 
 
 class QRCodeService:
@@ -27,6 +28,9 @@ class QRCodeService:
 
     def task_id_qrcode(self, task_id: TaskId) -> BytesIO:
         return self._generate_qrcode(TaskIdPrefix, task_id)
+
+    def product_id_qrcode(self, product_id: ProductId) -> BytesIO:
+        return self._generate_qrcode(ProductIdPrefix, product_id)
 
     def _generate_qrcode(self, prefix: str, data: Any) -> BytesIO:
         self.qr.clear()

@@ -7,6 +7,7 @@ from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError, TelegramNotFound
 
 from core.ids import UserId
+from core.services.roles import RolesService
 from database.repos.users import UsersRepo
 
 logger = logging.getLogger(__name__)
@@ -29,11 +30,15 @@ class Broadcaster:
         self,
         bot: Bot,
         users_repo: UsersRepo,
+        roles_service: RolesService,
     ) -> None:
         self.bot = bot
         self.users_repo = users_repo
+        self.roles_service = roles_service
 
-    async def broadcast(self, message: str) -> BroadcastResult:
+    async def broadcast(self, message: str, master_id: UserId) -> BroadcastResult:
+        await self.roles_service.is_admin(master_id)
+
         users = await self.users_repo.get_active()
         return await self._broadcast(message, [user.id for user in users])
 

@@ -70,7 +70,7 @@ async def salesman_buyer_id_handler(
 
     data = await state.get_data()
     product_id = int(data["product_id"])
-    product = await products_repo.get_one(product_id)
+    product = await products_repo.get_by_id(product_id)
 
     if buyer.balance < product.price:
         text = "У покупателя недостаточно средств"

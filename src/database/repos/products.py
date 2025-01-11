@@ -12,7 +12,7 @@ class ProductsRepo(BaseAlchemyRepo):
         description: str,
         price: int,
         stock: int,
-    ) -> ProductModel:
+    ) -> ProductId:
         product = ProductModel(
             name=name,
             description=description,
@@ -21,9 +21,9 @@ class ProductsRepo(BaseAlchemyRepo):
         )
         self.session.add(product)
         await self.session.flush()
-        return product
+        return product.id
 
-    async def get_one(self, product_id: ProductId) -> ProductModel | None:
+    async def get_by_id(self, product_id: ProductId) -> ProductModel | None:
         query = select(ProductModel).where(ProductModel.id == product_id)
         return await self.session.scalar(query)
 
@@ -57,5 +57,14 @@ class ProductsRepo(BaseAlchemyRepo):
 
     async def delete(self, product_id: ProductId) -> None:
         query = delete(ProductModel).where(ProductModel.id == product_id)
+        await self.session.execute(query)
+        await self.session.flush()
+
+    async def set_qrcode_image_id(self, product_id: ProductId, image_id: str) -> None:
+        query = (
+            update(ProductModel)
+            .where(ProductModel.id == product_id)
+            .values(qrcode_image_id=image_id)
+        )
         await self.session.execute(query)
         await self.session.flush()

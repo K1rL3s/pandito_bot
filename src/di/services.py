@@ -4,12 +4,12 @@ from dishka import Provider, Scope, provide
 from core.services.broadcast import Broadcaster
 from core.services.products import ProductsService
 from core.services.purchases import PurchasesService
+from core.services.qrcode_saver import QRCodeSaver
 from core.services.qrcodes import QRCodeService
 from core.services.roles import RolesService
 from core.services.secrets import SecretsService
 from core.services.tasks import TasksService
 from core.services.users import UsersService
-from database.repos.users import UsersRepo
 
 
 class ServicesProvider(Provider):
@@ -21,14 +21,8 @@ class ServicesProvider(Provider):
         bot_name = (await bot.me()).username
         return QRCodeService(bot_name)
 
-    @provide
-    async def broadcaster(
-        self,
-        event: TelegramObject,
-        users_repo: UsersRepo,
-    ) -> Broadcaster:
-        return Broadcaster(event.bot, users_repo)
-
+    qrcode_saver = provide(QRCodeSaver)
+    broadcaster = provide(Broadcaster)
     products_service = provide(ProductsService)
     users_service = provide(UsersService)
     secrets_service = provide(SecretsService)

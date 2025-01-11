@@ -36,11 +36,11 @@ def include_client_routers(root_router: Router) -> None:
     registered_clients_router.include_routers(
         cancel_router,
         task_router,
+        products_router,
         secret_router,
         menu_router,
         help_router,
         qrcodes_router,
-        products_router,
         purchases_router,
         transfer_funds_router,
     )

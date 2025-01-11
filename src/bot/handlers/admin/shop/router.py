@@ -1,35 +1,38 @@
-from aiogram import Router
-from aiogram.filters import Command, CommandObject, StateFilter
+from aiogram import F, Router
+from aiogram.filters import Command, CommandObject, CommandStart, MagicData, StateFilter
 from aiogram.types import Message
+from aiogram_dialog import DialogManager
 from dishka import FromDishka
 
 from core.services.products import ProductsService
+from core.services.qrcodes import ProductIdPrefix
 from database.repos.products import ProductsRepo
+
+from .view.states import ViewProductsStates
 
 router = Router(name=__file__)
 
 
-@router.message(Command("product"), StateFilter(None))
-async def admin_new_product(
+@router.message(
+    CommandStart(deep_link=True, magic=F.args.startswith(ProductIdPrefix)),
+    MagicData(F.command.args.as_("product_deeplink")),
+)
+async def start_task_by_deeplink(
     message: Message,
-    command: CommandObject,
+    product_deeplink: str,
+    dialog_manager: DialogManager,
     products_repo: FromDishka[ProductsRepo],
 ) -> None:
-    if command.args and len(command.args.split()) >= 4:
-        args = command.args.split()
-        name, price, stock, description = args[0], int(args[1]), int(args[2]), args[3:]
-        product = await products_repo.create_product(
-            name,
-            " ".join(description),
-            price,
-            stock,
-        )
-        await message.answer(f"Успех! Id: {product.id}")
-    else:
-        await message.answer(
-            "Формат: /product <name> <price> <stock> <description>",
-            parse_mode=None,
-        )
+    product_id = product_deeplink.lstrip(ProductIdPrefix)
+    if product_id.isdigit():
+        product_id = int(product_id)
+        if await products_repo.get_by_id(product_id):
+            await dialog_manager.start(
+                ViewProductsStates.one,
+                data={"product_id": product_id},
+            )
+
+    await message.delete()
 
 
 @router.message(Command("stock"), StateFilter(None))

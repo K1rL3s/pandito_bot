@@ -7,9 +7,10 @@ from .logs.router import router as logs_router
 from .money.router import router as money_router
 from .panel.dialogs import admin_panel_dialog
 from .panel.router import router as admin_panel_router
-from .products.router import router as products_routes
 from .secrets.dialogs import create_secret_dialog, view_secrets_dialog
 from .secrets.router import router as secrets_router
+from .shop.dialogs import create_product_dialog, view_products_dialog
+from .shop.router import router as products_routes
 from .tasks.create.dialogs import create_task_dialog
 from .tasks.router import router as tasks_router
 from .tasks.view.dialogs import view_tasks_dialog
@@ -27,13 +28,13 @@ def include_admin_routers(root_router: Router) -> None:
 
     admin_router.include_routers(
         users_router,
+        tasks_router,
+        products_routes,
         admin_panel_router,
         broadcast_router,
         logs_router,
         money_router,
-        products_routes,
         secrets_router,
-        tasks_router,
     )
 
     root_router.include_router(admin_router)
@@ -57,6 +58,8 @@ def include_admin_dialogs(root_router: Router) -> None:
         view_user_task_dialog,
         cancel_task_dialog,
         confirm_task_dialog,
+        view_products_dialog,
+        create_product_dialog,
     )
 
     root_router.include_router(admin_router)

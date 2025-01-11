@@ -5,22 +5,17 @@ from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
 from core.ids import ProductId
-from database.models import ProductModel
 from database.repos.products import ProductsRepo
 
 
 @inject
-async def get_available_products(
+async def get_all_products(
+    dialog_manager: DialogManager,
     products_repo: FromDishka[ProductsRepo],
     **__: Any,
-) -> dict[str, list[ProductModel]]:
-    products = await products_repo.get_available()
-    total_stock = sum(product.stock for product in products)
-    return {
-        "products": products,
-        "products_len": len(products),
-        "total_stock": total_stock,
-    }
+) -> dict[str, Any]:
+    products = await products_repo.get_all()
+    return {"products": products}
 
 
 @inject
@@ -28,6 +23,7 @@ async def get_one_product(
     dialog_manager: DialogManager,
     products_repo: FromDishka[ProductsRepo],
     **__: Any,
-) -> dict[str, ProductModel | None]:
+) -> dict[str, Any]:
     product_id: ProductId = dialog_manager.dialog_data["product_id"]
-    return {"product": await products_repo.get_by_id(product_id)}
+    product = await products_repo.get_by_id(product_id)
+    return {"product": product}

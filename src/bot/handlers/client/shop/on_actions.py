@@ -30,7 +30,7 @@ async def on_buy_product(
 ) -> None:
     product_id: ProductId = dialog_manager.dialog_data["product_id"]
     user: UserModel = dialog_manager.middleware_data["user"]
-    product = await products_repo.get_one(product_id)
+    product = await products_repo.get_by_id(product_id)
 
     if product.stock <= 0:
         dialog_manager.dialog_data["final_message"] = "Упс, продукт уже раскупили"

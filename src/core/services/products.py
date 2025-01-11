@@ -6,6 +6,7 @@ from core.exceptions import (
     UserNotFound,
 )
 from core.ids import ProductId, UserId
+from core.services.roles import RolesService
 from database.repos.logs import LogsRepo
 from database.repos.products import ProductsRepo
 from database.repos.purchases import PurchasesRepo
@@ -19,11 +20,13 @@ class ProductsService:
         users_repo: UsersRepo,
         purchases_repo: PurchasesRepo,
         logs_repo: LogsRepo,
+        roles_service: RolesService,
     ) -> None:
         self.products_repo = products_repo
         self.users_repo = users_repo
         self.purchases_repo = purchases_repo
         self.logs_repo = logs_repo
+        self.roles_service = roles_service
 
     async def buy_product(
         self,
@@ -31,7 +34,7 @@ class ProductsService:
         product_id: ProductId,
         quantity: int,
     ) -> int:
-        product = await self.products_repo.get_one(product_id)
+        product = await self.products_repo.get_by_id(product_id)
         if product is None:
             raise ProductNotFound(product_id)
 
@@ -68,7 +71,7 @@ class ProductsService:
                 f'"{quantity}"',
             )
 
-        product = await self.products_repo.get_one(product_id)
+        product = await self.products_repo.get_by_id(product_id)
         if product is None:
             raise ProductNotFound(product_id)
 
@@ -84,7 +87,7 @@ class ProductsService:
         if new_stock < 0:
             raise InvalidValue("Кол-во товара не может быть отрицательным")
 
-        product = await self.products_repo.get_one(product_id)
+        product = await self.products_repo.get_by_id(product_id)
         if product is None:
             raise ProductNotFound(product_id)
 
@@ -94,8 +97,19 @@ class ProductsService:
         if new_price <= 0:
             raise InvalidValue("Цена не может быть отрицательной")
 
-        product = await self.products_repo.get_one(product_id)
+        product = await self.products_repo.get_by_id(product_id)
         if product is None:
             raise ProductNotFound(product_id)
 
         return await self.products_repo.set_price(product_id, new_price)
+
+    async def create(
+        self,
+        name: str,
+        description: str,
+        price: int,
+        stock: int,
+        master_id: UserId,
+    ) -> ProductId:
+        await self.roles_service.is_seller(master_id)
+        return await self.products_repo.create_product(name, description, price, stock)
