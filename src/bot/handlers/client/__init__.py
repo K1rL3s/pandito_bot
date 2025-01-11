@@ -6,6 +6,7 @@ from .cart.dialogs import cart_dialog
 from .cart.router import router as purchases_router
 from .help.dialogs import help_dialog
 from .help.router import router as help_router
+from .lottery.dialogs import lottery_dialog
 from .menu.dialogs import menu_dialog
 from .menu.router import router as menu_router
 from .qrcode.router import router as qrcodes_router
@@ -60,6 +61,7 @@ def include_client_dialogs(root_router: Router) -> None:
         shop_dialog,
         cart_dialog,
         transfer_dialog,
+        lottery_dialog,
         view_task_dialog,
         start_task_dialog,
         task_answer_dialog,

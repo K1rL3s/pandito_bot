@@ -6,6 +6,7 @@ from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
 from bot.dialogs.filters.roles import IsAdmin
+from bot.dialogs.on_actions import on_start_update_dialog_data
 
 from ..buttons import GoToSecretsButton
 from ..getters import get_all_secrets, get_one_secret
@@ -18,7 +19,7 @@ from .on_actions import (
 from .states import ViewSecretsStates
 
 secrets_list_window = Window(
-    Const("Все секреты"),
+    Const("🤫 Все секреты"),
     ScrollingGroup(
         Select(
             Format("{item.id} | {item.phrase}"),
@@ -83,4 +84,5 @@ view_secrets_dialog = Dialog(
     secrets_list_window,
     view_one_secret_window,
     confirm_delete_secret_window,
+    on_start=on_start_update_dialog_data,
 )

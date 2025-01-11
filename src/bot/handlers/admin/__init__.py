@@ -5,7 +5,6 @@ from bot.filters.roles import IsAdmin, IsLottery, IsSeller, IsStager, IsWithRole
 from .broadcast.dialogs import broadcast_dialog
 from .broadcast.router import router as broadcast_router
 from .logs.router import router as logs_router
-from .lottery.dialogs import lottery_info_dialog
 from .money.router import router as money_router
 from .panel.dialogs import admin_panel_dialog
 from .panel.router import router as admin_panel_router
@@ -93,10 +92,7 @@ def include_admin_dialogs(root_router: Router) -> None:
     lottery_router = Router(name=__file__)
     for observer in stager_router.observers.values():
         observer.filter(IsLottery())
-    lottery_router.include_routers(
-        lottery_info_dialog,
-        set_lottery_info_dialog,
-    )
+    lottery_router.include_routers(set_lottery_info_dialog)
 
     with_role_router = Router(name=__file__)
     for observer in with_role_router.observers.values():

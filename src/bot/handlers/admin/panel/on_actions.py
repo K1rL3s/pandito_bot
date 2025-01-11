@@ -3,7 +3,6 @@ from aiogram_dialog import DialogManager
 from aiogram_dialog.widgets.kbd import Button
 
 from bot.handlers.admin.broadcast.states import BroadcastStates
-from bot.handlers.admin.lottery.states import ViewLotteryStates
 from bot.handlers.admin.secrets.view.states import ViewSecretsStates
 from bot.handlers.admin.shop.view.states import ViewProductsStates
 from bot.handlers.admin.tasks.view.states import ViewTasksStates
@@ -48,11 +47,3 @@ async def on_go_to_shop(
     dialog_manager: DialogManager,
 ) -> None:
     await dialog_manager.start(state=ViewProductsStates.list)
-
-
-async def on_go_to_lottery(
-    _: CallbackQuery,
-    __: Button,
-    dialog_manager: DialogManager,
-) -> None:
-    await dialog_manager.start(state=ViewLotteryStates.view)
