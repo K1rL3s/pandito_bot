@@ -84,6 +84,11 @@ class InvalidValueAfterUpdate(InvalidValue):
     pass
 
 
+class StudentIdAlreadyExists(InvalidValueAfterUpdate):
+    def __init__(self, student_id: str) -> None:
+        super().__init__(f"Номер студенческого {student_id} уже занят")
+
+
 class NotEnoughRights(ServiceException):
     pass
 

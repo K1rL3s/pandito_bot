@@ -7,8 +7,9 @@ from aiogram_dialog.widgets.text import Const, Format
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
 from bot.dialogs.on_actions import on_start_update_dialog_data
 
+from ..buttons import GoToUserButton
 from ..getters import user_short_link
-from ..on_actions import _UserIdNameText, on_go_view_user
+from ..on_actions import _UserIdNameText
 from .getters import get_roles
 from .on_actions import on_role_confirm, on_role_selected
 from .states import RoleUserStates
@@ -26,7 +27,7 @@ user_role_window = Window(
         ),
         width=2,
     ),
-    Button(Const("⏪ Юзер"), id="back", on_click=on_go_view_user),
+    GoToUserButton,
     GoToAdminPanelButton(),
     GoToMenuButton(),
     getter=[user_short_link, get_roles],

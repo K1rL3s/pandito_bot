@@ -29,6 +29,10 @@ class UsersRepo(BaseAlchemyRepo):
         query = select(UserModel).where(UserModel.id == tg_id)
         return await self.session.scalar(query)
 
+    async def get_by_student_id(self, student_id: str) -> UserModel | None:
+        query = select(UserModel).where(UserModel.student_id == student_id)
+        return await self.session.scalar(query)
+
     async def get_all(self) -> list[UserModel]:
         query = select(UserModel).order_by(UserModel.created_at.desc())
         return list(await self.session.scalars(query))
@@ -39,6 +43,10 @@ class UsersRepo(BaseAlchemyRepo):
             .where(UserModel.is_active == True)  # noqa: E712
             .order_by(UserModel.created_at.asc())
         )
+        return list(await self.session.scalars(query))
+
+    async def get_lottery(self) -> list[UserModel]:
+        query = select(UserModel).where(UserModel.student_id != None)  # noqa: E711
         return list(await self.session.scalars(query))
 
     async def set_balance(self, tg_id: UserId, new_balance: int) -> None:
@@ -66,5 +74,19 @@ class UsersRepo(BaseAlchemyRepo):
 
     async def set_role(self, tg_id: UserId, role: str | None) -> None:
         query = update(UserModel).where(UserModel.id == tg_id).values(role=role)
+        await self.session.execute(query)
+        await self.session.flush()
+
+    async def set_lottery_info(
+        self,
+        tg_id: UserId,
+        student_id: str,
+        group: str,
+    ) -> None:
+        query = (
+            update(UserModel)
+            .where(UserModel.id == tg_id)
+            .values(student_id=student_id, group=group)
+        )
         await self.session.execute(query)
         await self.session.flush()

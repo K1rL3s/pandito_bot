@@ -6,7 +6,7 @@ from aiogram_dialog.widgets.text import Const, Format
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
 from bot.dialogs.on_actions import on_start_update_dialog_data
 
-from ...on_actions import on_go_view_user
+from ...buttons import GoToUserButton
 from ..getters import get_active_task
 from .on_actions import on_cancel_task, on_confirm_task
 from .states import TaskUserStates
@@ -32,7 +32,7 @@ view_task_window = Window(
         on_click=on_cancel_task,
         when=F["task"].is_not(None),
     ),
-    Button(Const("⏪ Юзер"), id="back", on_click=on_go_view_user),
+    GoToUserButton,
     GoToAdminPanelButton(),
     GoToMenuButton(),
     getter=get_active_task,

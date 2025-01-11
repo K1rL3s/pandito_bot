@@ -20,6 +20,7 @@ async def main() -> None:
 
     container = make_container()
     setup_dishka(container=container, router=dp, auto_inject=True)
+    dp.shutdown.register(container.close)
 
     setup_middlewares(bot, dp)
     include_routers(dp)

@@ -3,10 +3,11 @@ from aiogram_dialog.widgets.kbd import Button, Group
 from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToMenuButton
-from bot.dialogs.filters.roles import IsAdmin, IsSeller, IsStager, IsWithRole
+from bot.dialogs.filters.roles import IsAdmin, IsLottery, IsSeller, IsStager, IsWithRole
 
 from .on_actions import (
     on_go_to_broadcast,
+    on_go_to_lottery,
     on_go_to_secrets,
     on_go_to_shop,
     on_go_to_tasks,
@@ -46,6 +47,12 @@ admin_panel_window = Window(
             id="tasks",
             on_click=on_go_to_tasks,
             when=IsStager(),
+        ),
+        Button(
+            Const("🎟️ Лотерея"),
+            id="lottery",
+            on_click=on_go_to_lottery,
+            when=IsLottery(),
         ),
         width=2,
     ),
