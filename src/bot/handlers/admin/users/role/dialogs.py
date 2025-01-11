@@ -1,7 +1,7 @@
 import operator
 
 from aiogram_dialog import Dialog, Window
-from aiogram_dialog.widgets.kbd import Back, Button, Group, Row, Select
+from aiogram_dialog.widgets.kbd import Back, Button, Group, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
@@ -46,15 +46,8 @@ set_role_window = Window(
     state=RoleUserStates.role,
 )
 
-# TODO убрать
-set_role_confirm = Window(
-    Const("Ок!"),
-    state=RoleUserStates.confirm,
-)
-
 user_role_dialog = Dialog(
     user_role_window,
     set_role_window,
-    set_role_confirm,
     on_start=on_start_update_dialog_data,
 )

@@ -4,6 +4,7 @@ from aiogram_dialog.widgets.kbd import Button
 from dishka import FromDishka
 from dishka.integrations.aiogram_dialog import inject
 
+from bot.handlers.admin.users.view.states import ViewUserStates
 from core.enums import ALL_ROLES
 from core.ids import UserId
 from core.services.users import UsersService
@@ -32,4 +33,4 @@ async def on_role_confirm(
     user_id: UserId = dialog_manager.dialog_data["view_user_id"]
     admin: UserModel = dialog_manager.middleware_data["user"]
     await users_service.change_role(user_id, admin.id, role)
-    await dialog_manager.next()
+    await dialog_manager.start(ViewUserStates.one, data={"view_user_id": user_id})

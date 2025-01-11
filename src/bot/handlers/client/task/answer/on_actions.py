@@ -20,8 +20,14 @@ async def on_answer_input(
 ) -> None:
     user: UserModel = dialog_manager.middleware_data["user"]
     try:
-        reward = await tasks_service.reward_for_active_task(user.id, message.text)
+        title, reward = await tasks_service.reward_for_task_by_pharse(
+            user.id,
+            message.text,
+        )
     except WrongTaskAnswer:
         return await dialog_manager.start(AnswerTaskStates.fail)
 
-    return await dialog_manager.start(AnswerTaskStates.ok, data={"reward": reward})
+    return await dialog_manager.start(
+        AnswerTaskStates.ok,
+        data={"reward": reward, "title": title},
+    )

@@ -9,9 +9,8 @@ from ..getters import get_active_task
 from .on_actions import on_answer, on_cancel_task
 from .states import ViewTaskStates
 
-# TODO убрать айди?
 view_task_window = Window(
-    Format("<tg-spoiler>ID: {task.id}</tg-spoiler>"),
+    # Format("<tg-spoiler>ID: {task.id}</tg-spoiler>"),
     Format("Название: {task.title}"),
     Format("Награда: {task.reward} Пятаков\n"),
     Format("{task.description}"),

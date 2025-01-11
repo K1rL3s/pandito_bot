@@ -10,7 +10,7 @@ class LogsRepo(BaseAlchemyRepo):
         log = LogsModel(user_id=user_id, description=description)
         self.session.add(log)
         await self.session.flush()
-        return log.id  # TODO проверить что айди есть
+        return log.id
 
     async def get_user_logs(self, user_id: UserId) -> list[LogsModel]:
         query = (

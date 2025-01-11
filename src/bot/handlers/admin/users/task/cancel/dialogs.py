@@ -7,12 +7,13 @@ from bot.dialogs.on_actions import on_start_update_dialog_data
 
 from ...on_actions import on_go_view_user
 from ..on_actions import on_go_user_task
+from .on_actions import on_cancel_task
 from .states import CancelTaskStates
 
 # TODO: отмена задания
 cancel_task_window = Window(
     Const("Уверены, что хотите прекратить выполнение задания?"),
-    Button(Const("✅ Подтвердить"), id="confirm", on_click=None),
+    Button(Const("✅ Подтвердить"), id="confirm", on_click=on_cancel_task),
     Button(Const("⏪ Задание"), id="task", on_click=on_go_user_task),
     Button(Const("⏪ Юзер"), id="user", on_click=on_go_view_user),
     GoToAdminPanelButton(),

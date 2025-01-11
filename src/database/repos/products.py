@@ -21,7 +21,7 @@ class ProductsRepo(BaseAlchemyRepo):
         )
         self.session.add(product)
         await self.session.flush()
-        return product  # TODO проверить что айди есть
+        return product
 
     async def get_one(self, product_id: ProductId) -> ProductModel | None:
         query = select(ProductModel).where(ProductModel.id == product_id)

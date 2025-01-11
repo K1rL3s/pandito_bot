@@ -28,7 +28,7 @@ class PurchasesRepo(BaseAlchemyRepo):
         )
         self.session.add(purchase)
         await self.session.flush()
-        return purchase  # TODO проверить что появился айдишник
+        return purchase
 
     async def get_user_purchases(
         self,

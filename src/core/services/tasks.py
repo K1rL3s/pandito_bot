@@ -72,7 +72,11 @@ class TasksService:
 
         await self.tasks_repo.unlink_user_from_task(user_id, task.id)
 
-    async def reward_for_active_task(self, user_id: UserId, phrase: str) -> int:
+    async def reward_for_task_by_pharse(
+        self,
+        user_id: UserId,
+        phrase: str,
+    ) -> tuple[str, int]:
         user = await self.users_repo.get_by_id(user_id)
         if user is None:
             raise UserNotFound(user_id)
@@ -89,4 +93,26 @@ class TasksService:
         new_balance = user.balance + task.reward
         await self.users_repo.set_balance(user_id, new_balance)
 
-        return task.reward
+        return task.title, task.reward
+
+    async def reward_for_task_by_stager(
+        self,
+        user_id: UserId,
+        master_id: UserId,
+    ) -> tuple[str, int]:
+        user = await self.users_repo.get_by_id(user_id)
+        if user is None:
+            raise UserNotFound(user_id)
+
+        await self.roles_service.is_stager(master_id)
+
+        task = await self.tasks_repo.get_active_task(user_id)
+        if task is None:
+            raise ActiveTaskNotFound(user_id)
+
+        await self.tasks_repo.set_users_to_tasks_status(user_id, task.id, True)
+
+        new_balance = user.balance + task.reward
+        await self.users_repo.set_balance(user_id, new_balance)
+
+        return task.title, task.reward

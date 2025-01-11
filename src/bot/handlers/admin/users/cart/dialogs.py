@@ -38,15 +38,9 @@ clear_cart_window = Window(
     state=CartUserStates.clear,
 )
 
-# TODO убрать
-clear_cart_confirm = Window(
-    Const("Ок!"),
-    state=CartUserStates.confirm,
-)
 
 user_cart_dialog = Dialog(
     user_cart_window,
     clear_cart_window,
-    clear_cart_confirm,
     on_start=on_start_update_dialog_data,
 )

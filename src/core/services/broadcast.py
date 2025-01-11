@@ -1,10 +1,17 @@
+import asyncio
 import logging
 from dataclasses import dataclass
+from typing import Any
 
 from aiogram import Bot
 from aiogram.exceptions import TelegramForbiddenError, TelegramNotFound
 
+from core.ids import UserId
 from database.repos.users import UsersRepo
+
+logger = logging.getLogger(__name__)
+
+NOTIFIES_PER_BATCH = 20
 
 
 @dataclass
@@ -17,23 +24,52 @@ class BroadcastResult:
         return self.ok + self.fail
 
 
-class Broadcaster:  # TODO ускорить (очередь?)
-    def __init__(self, users_repo: UsersRepo) -> None:
+class Broadcaster:
+    def __init__(
+        self,
+        bot: Bot,
+        users_repo: UsersRepo,
+    ) -> None:
+        self.bot = bot
         self.users_repo = users_repo
 
-    async def broadcast(self, bot: Bot, message: str) -> BroadcastResult:
-        ok = fail = 0
-
+    async def broadcast(self, message: str) -> BroadcastResult:
         users = await self.users_repo.get_active()
-        for user in users:
-            try:
-                await bot.send_message(chat_id=user.id, text=message)
-                ok += 1
-            except (TelegramNotFound, TelegramForbiddenError):
-                await self.users_repo.change_active(user.id, False)
-                fail += 1
-            except Exception as e:  # noqa: BLE001
-                logging.error(f"Ошибка во время рассылки: {type(e).__name__}('{e}')")
-                fail += 1
+        return await self._broadcast(message, [user.id for user in users])
 
-        return BroadcastResult(ok, fail)
+    async def _broadcast(
+        self,
+        text: str,
+        users: list[UserId],
+    ) -> BroadcastResult:
+        ok = 0
+        for i in range(0, len(users), NOTIFIES_PER_BATCH):
+            tasks = [
+                asyncio.create_task(self.one_notify(text, user_id))
+                for user_id in users[i : i + NOTIFIES_PER_BATCH]
+            ]
+            timer = asyncio.create_task(asyncio.sleep(1))
+            results = await asyncio.gather(*tasks)
+            await timer
+
+            ok += sum(results)
+
+        return BroadcastResult(ok, len(users) - ok)
+
+    async def one_notify(
+        self,
+        text: str,
+        user_id: UserId,
+        **kwargs: Any,
+    ) -> bool:
+        try:
+            await self.bot.send_message(text=text, chat_id=user_id, **kwargs)
+        except (TelegramNotFound, TelegramForbiddenError):
+            await self.users_repo.change_active(user_id, is_active=False)
+            return False
+        except Exception as e:  # noqa: BLE001
+            logging.warning(f"Ошибка во время рассылки: {type(e).__name__}('{e}')")
+            return False
+
+        logger.debug("Уведомление успешно для ID=%d", user_id)
+        return True

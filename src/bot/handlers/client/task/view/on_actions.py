@@ -6,6 +6,7 @@ from dishka.integrations.aiogram_dialog import inject
 
 from bot.handlers.client.menu.states import MenuStates
 from core.services.tasks import TasksService
+from database.repos.tasks import TasksRepo
 
 from ..answer.states import AnswerTaskStates
 
@@ -21,9 +22,14 @@ async def on_cancel_task(
     await dialog_manager.start(MenuStates.menu)
 
 
+@inject
 async def on_answer(
-    _: CallbackQuery,
+    callback: CallbackQuery,
     __: Button,
     dialog_manager: DialogManager,
+    tasks_repo: FromDishka[TasksRepo],
 ) -> None:
-    await dialog_manager.start(AnswerTaskStates.wait)
+    if await tasks_repo.get_active_task(callback.from_user.id):
+        await dialog_manager.start(AnswerTaskStates.wait)
+    else:
+        await dialog_manager.start(MenuStates.menu)

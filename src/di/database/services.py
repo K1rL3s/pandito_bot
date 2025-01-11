@@ -9,6 +9,7 @@ from core.services.roles import RolesService
 from core.services.secrets import SecretsService
 from core.services.tasks import TasksService
 from core.services.users import UsersService
+from database.repos.users import UsersRepo
 
 
 class ServicesProvider(Provider):
@@ -20,9 +21,16 @@ class ServicesProvider(Provider):
         bot_name = (await bot.me()).username
         return QRCodeService(bot_name)
 
+    @provide
+    async def broadcaster(
+        self,
+        event: TelegramObject,
+        users_repo: UsersRepo,
+    ) -> Broadcaster:
+        return Broadcaster(event.bot, users_repo)
+
     products_service = provide(ProductsService)
     users_service = provide(UsersService)
-    broadcaster = provide(Broadcaster)
     secrets_service = provide(SecretsService)
     tasks_service = provide(TasksService)
     purchases_service = provide(PurchasesService)
