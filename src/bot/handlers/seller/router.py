@@ -10,7 +10,7 @@ from aiogram.types import (
 )
 from dishka import FromDishka
 
-from bot.keyboards.products import products_seller_keyboard
+from bot.handlers.seller.keyboards import products_seller_keyboard
 from bot.states import SalesmanCart, SalesmanShop
 from core.services.products import ProductsService
 from database.repos.products import ProductsRepo
