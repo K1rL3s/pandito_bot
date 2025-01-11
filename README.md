@@ -40,11 +40,8 @@
 `/admin` `/panel` - Админ панель
 `/broadcast` - Рассылка
 
-`/product <name> <price> <stock> <description>` - Создать товар  СТАРОЕ
-`/list_products` - Список товаров  СТАРОЕ
-`/delete_product <product_id>` - Удалить товар  СТАРОЕ
 `/price <product_id> <new_price>` - Изменить цену товара product_id на new_price  СТАРОЕ
 `/stock <product_id> <new_stock>` - Изменить количество товара на складе  СТАРОЕ
 
-`/money <user_id> <amount>` - Прибавить amount пятаков юзеру user_id  СТАРОЕ
+`/money <user_id> <amount>` - Прибавить amount Пятаков юзеру user_id  СТАРОЕ
 `/logs <user_id>` - Логи юзера  СТАРОЕ

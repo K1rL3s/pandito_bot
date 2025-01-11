@@ -113,3 +113,12 @@ class ProductsService:
     ) -> ProductId:
         await self.roles_service.is_seller(master_id)
         return await self.products_repo.create_product(name, description, price, stock)
+
+    async def delete(self, product_id: ProductId, master_id: UserId) -> None:
+        product = await self.products_repo.get_by_id(product_id)
+        if product is None:
+            raise ProductNotFound(product_id)
+
+        await self.roles_service.is_seller(master_id)
+
+        await self.products_repo.delete(product_id)

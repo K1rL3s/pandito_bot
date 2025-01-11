@@ -27,7 +27,7 @@ products_list_window = Window(
             items="products",
             on_click=on_product_selected,
             item_id_getter=operator.attrgetter("id"),
-            type_factory=str,
+            type_factory=int,
         ),
         width=1,
         height=10,

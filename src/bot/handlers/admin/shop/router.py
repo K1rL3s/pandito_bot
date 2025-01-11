@@ -67,35 +67,3 @@ async def admin_change_product_price(
         )
     else:
         await message.answer("Формат: /price <id> <new_price>", parse_mode=None)
-
-
-@router.message(Command("delete_product"), StateFilter(None))
-async def admin_delete_product(
-    message: Message,
-    command: CommandObject,
-    products_repo: FromDishka[ProductsRepo],
-) -> None:
-    if command.args and len(command.args.split()) == 1:
-        product_id = int(command.args)
-        await products_repo.delete(product_id)
-        await message.answer(f"Товар с ID {product_id} был успешно удален.")
-    else:
-        await message.answer("Формат: /delete_product <id>", parse_mode=None)
-
-
-@router.message(Command("list_products"), StateFilter(None))
-async def admin_list_products(
-    message: Message,
-    products_repo: FromDishka[ProductsRepo],
-) -> None:
-    products = await products_repo.get_all()
-    product_list = "\n".join(
-        [
-            f"ID: {product.id}, Название: {product.name}, "
-            f"Цена: {product.price} Пятаков, Остаток: {product.stock}"
-            for product in products
-        ],
-    )
-    await message.answer(
-        f"<b>Список товаров:</b>\n\n{product_list}" if product_list else "Не товаров.",
-    )

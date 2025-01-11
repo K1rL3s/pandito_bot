@@ -30,7 +30,8 @@ async def start_task_by_deeplink(
     product_id = product_deeplink.lstrip(ProductIdPrefix)
     if product_id.isdigit():
         product_id = int(product_id)
-        if await products_repo.get_by_id(product_id):
+        product = await products_repo.get_by_id(product_id)
+        if product and product.stock > 0:
             await dialog_manager.start(
                 ShopStates.one,
                 data={"product_id": product_id},
