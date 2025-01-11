@@ -10,8 +10,14 @@ from database.models.base import BaseAlchemyModel
 class UsersToTasksModel(CreatedAtMixin, UpdatedAtMixin, BaseAlchemyModel):
     __tablename__ = "users_to_tasks"
 
-    user_id: Mapped[UserId] = mapped_column(ForeignKey("users.id"), primary_key=True)
-    task_id: Mapped[TaskId] = mapped_column(ForeignKey("tasks.id"), primary_key=True)
+    user_id: Mapped[UserId] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    task_id: Mapped[TaskId] = mapped_column(
+        ForeignKey("tasks.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
 
     # False - не выполнено, True - выполнено
     status: Mapped[bool] = mapped_column(Boolean, nullable=False)

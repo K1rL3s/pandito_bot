@@ -5,7 +5,7 @@ from aiogram_dialog.widgets.kbd import Back, Button, ScrollingGroup, Select
 from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
-from bot.filters.roles import IsAdmin
+from bot.dialogs.filters.roles import IsAdmin
 
 from ..buttons import GoToSecretsButton
 from ..getters import get_all_secrets, get_one_secret

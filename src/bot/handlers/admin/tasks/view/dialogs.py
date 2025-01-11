@@ -5,8 +5,8 @@ from aiogram_dialog.widgets.kbd import Back, Button, Next, ScrollingGroup, Selec
 from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
+from bot.dialogs.filters.roles import IsStager
 from bot.dialogs.on_actions import on_start_update_dialog_data
-from bot.filters.roles import IsStager
 
 from ..buttons import GoToTasksButton
 from ..getters import get_all_tasks, get_one_task
@@ -19,7 +19,7 @@ from .on_actions import (
 from .states import ViewTasksStates
 
 tasks_list_window = Window(
-    Const("Все задания"),
+    Const("🧠 Все задания"),
     ScrollingGroup(
         Select(
             Format("{item.id} | {item.status} | {item.title}"),
@@ -40,6 +40,7 @@ tasks_list_window = Window(
         on_click=on_create_task,
         when=IsStager(),
     ),
+    GoToTasksButton(),
     GoToAdminPanelButton(),
     GoToMenuButton(),
     getter=get_all_tasks,

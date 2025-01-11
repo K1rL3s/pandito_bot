@@ -1,5 +1,6 @@
-from aiogram import F, Router
-from aiogram.filters import MagicData
+from aiogram import Router
+
+from bot.filters.roles import IsAdmin, IsSeller, IsStager, IsWithRole
 
 from .broadcast.dialogs import broadcast_dialog
 from .broadcast.router import router as broadcast_router
@@ -24,42 +25,78 @@ from .users.view.dialogs import view_user_dialog
 def include_admin_routers(root_router: Router) -> None:
     admin_router = Router(name=__file__)
     for observer in admin_router.observers.values():
-        observer.filter(MagicData(F.user.role.is_not(None)))  # Фильтр на админку
-
+        observer.filter(IsAdmin())
     admin_router.include_routers(
-        users_router,
-        tasks_router,
-        products_routes,
-        admin_panel_router,
         broadcast_router,
         logs_router,
         money_router,
         secrets_router,
     )
 
-    root_router.include_router(admin_router)
+    seller_router = Router(name=__file__)
+    for observer in seller_router.observers.values():
+        observer.filter(IsSeller())
+    seller_router.include_routers(products_routes)
+
+    stager_router = Router(name=__file__)
+    for observer in stager_router.observers.values():
+        observer.filter(IsStager())
+    stager_router.include_routers(tasks_router)
+
+    with_role_router = Router(name=__file__)
+    for observer in with_role_router.observers.values():
+        observer.filter(IsWithRole())
+    with_role_router.include_routers(
+        admin_panel_router,
+        admin_router,
+        seller_router,
+        stager_router,
+        users_router,
+    )
+
+    root_router.include_router(with_role_router)
 
 
 def include_admin_dialogs(root_router: Router) -> None:
     admin_router = Router(name=__file__)
     for observer in admin_router.observers.values():
-        observer.filter(MagicData(F.user.role.is_not(None)))  # Фильтр на админку
-
+        observer.filter(IsAdmin())
     admin_router.include_routers(
-        admin_panel_dialog,
         broadcast_dialog,
         view_secrets_dialog,
         create_secret_dialog,
-        view_user_dialog,
-        user_cart_dialog,
         user_role_dialog,
+    )
+
+    seller_router = Router(name=__file__)
+    for observer in seller_router.observers.values():
+        observer.filter(IsSeller())
+    seller_router.include_routers(
+        user_cart_dialog,
+        view_products_dialog,
+        create_product_dialog,
+    )
+
+    stager_router = Router(name=__file__)
+    for observer in stager_router.observers.values():
+        observer.filter(IsStager())
+    stager_router.include_routers(
         view_tasks_dialog,
         create_task_dialog,
         view_user_task_dialog,
         cancel_task_dialog,
         confirm_task_dialog,
-        view_products_dialog,
-        create_product_dialog,
     )
 
-    root_router.include_router(admin_router)
+    with_role_router = Router(name=__file__)
+    for observer in with_role_router.observers.values():
+        observer.filter(IsWithRole())
+    with_role_router.include_routers(
+        admin_panel_dialog,
+        view_user_dialog,
+        admin_router,
+        seller_router,
+        stager_router,
+    )
+
+    root_router.include_router(with_role_router)

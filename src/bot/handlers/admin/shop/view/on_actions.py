@@ -29,7 +29,7 @@ async def on_create_product(
     __: Button,
     dialog_manager: DialogManager,
 ) -> None:
-    await dialog_manager.start(state=CreateProductStates.title)
+    await dialog_manager.start(state=CreateProductStates.name)
 
 
 @inject

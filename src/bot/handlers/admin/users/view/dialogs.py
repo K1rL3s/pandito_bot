@@ -6,8 +6,8 @@ from aiogram_dialog.widgets.kbd import Back, Button, Group
 from aiogram_dialog.widgets.text import Const
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
+from bot.dialogs.filters.roles import IsAdmin, IsSeller, IsStager
 from bot.dialogs.on_actions import on_start_update_dialog_data
-from bot.filters.roles import IsAdmin, IsSeller, IsStager
 
 from ..getters import user_short_link
 from ..on_actions import _UserIdNameText

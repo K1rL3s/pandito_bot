@@ -5,6 +5,7 @@ from aiogram_dialog import DialogManager
 from dishka import FromDishka
 
 from bot.enums import SlashCommand
+from bot.filters.roles import IsStager
 from core.services.qrcodes import TaskIdPrefix
 from database.repos.tasks import TasksRepo
 
@@ -16,6 +17,7 @@ router = Router(name=__file__)
 @router.message(
     CommandStart(deep_link=True, magic=F.args.startswith(TaskIdPrefix)),
     MagicData(F.command.args.as_("task_deeplink")),
+    IsStager(),
 )
 async def start_task_by_deeplink(
     message: Message,

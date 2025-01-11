@@ -4,6 +4,7 @@ from aiogram.types import Message
 from aiogram_dialog import DialogManager
 from dishka import FromDishka
 
+from bot.filters.roles import IsSeller
 from core.services.products import ProductsService
 from core.services.qrcodes import ProductIdPrefix
 from database.repos.products import ProductsRepo
@@ -16,6 +17,7 @@ router = Router(name=__file__)
 @router.message(
     CommandStart(deep_link=True, magic=F.args.startswith(ProductIdPrefix)),
     MagicData(F.command.args.as_("product_deeplink")),
+    IsSeller(),
 )
 async def start_task_by_deeplink(
     message: Message,

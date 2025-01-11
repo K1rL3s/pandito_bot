@@ -5,8 +5,8 @@ from aiogram_dialog.widgets.kbd import Back, Button, Next, ScrollingGroup, Selec
 from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToMenuButton
+from bot.dialogs.filters.roles import IsSeller
 from bot.dialogs.on_actions import on_start_update_dialog_data
-from bot.filters.roles import IsSeller
 
 from ..buttons import GoToProductsButton
 from ..getters import get_all_products, get_one_product
@@ -19,7 +19,7 @@ from .on_actions import (
 from .states import ViewProductsStates
 
 products_list_window = Window(
-    Const("Все товары"),
+    Const("🛍️ Все товары"),
     ScrollingGroup(
         Select(
             Format("{item.id} | {item.name}"),

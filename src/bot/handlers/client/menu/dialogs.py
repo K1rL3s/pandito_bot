@@ -3,8 +3,8 @@ from aiogram_dialog.widgets.kbd import Button, Group
 from aiogram_dialog.widgets.text import Const, Format
 
 from bot.dialogs.buttons import GoToAdminPanelButton, GoToTaskButton
+from bot.dialogs.filters.roles import IsWithRole
 from bot.enums import BotWindow
-from bot.filters.roles import IsWithRole
 
 from .getters import get_user_info
 from .on_actions import on_cart, on_help, on_shop, on_transfer_funds
