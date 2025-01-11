@@ -17,7 +17,6 @@
     DB_NAME=name
     DB_USER=user
     DB_PASSWORD=password
-    REDIS_PASSWORD=password
     ```
 3. Иметь установленный [Docker Engine](https://docs.docker.com/engine/) и [docker compose v2](https://docs.docker.com/compose/releases/migrate/)
 4. Собрать и запустить:
@@ -29,19 +28,23 @@
 
 ## Команды
 
-`/menu` `/profile` `/balance` `/me`
-`/broadcast <message>`
-`/delete_product <product_id>`
-`/list_products`
-`/list_users`
-`/logs <user_id>`
-`/money <user_id> <amount>` - прибавляет amount коинов
-`/price <product_id> <new_price>`
-`/product <name> <price> <stock> <description>`
-`/stage <user_id> <stage>`
-`/stock <product_id> <new_stock>`
-`/secret <phrase>`
-`/list_secrets`
-`/delete_secret <id>`
-`/id` - куркод с диплинком на айди
-`/help`
+`/start` `/menu` `/profile` `/balance` `/me` - Старт
+`/help` - Описание бота
+`/shop` - Товары на продаже
+`/cart` - Купленные товары
+`/transfer` - Перевод денег между юзерами
+`/task` - Активное задание
+`/id` - Куркод с диплинком на юзера
+`/secret <phrase>` - Ввод секрета
+
+`/admin` `/panel` - Админ панель
+`/broadcast` - Рассылка
+
+`/product <name> <price> <stock> <description>` - Создать товар  СТАРОЕ
+`/list_products` - Список товаров  СТАРОЕ
+`/delete_product <product_id>` - Удалить товар  СТАРОЕ
+`/price <product_id> <new_price>` - Изменить цену товара product_id на new_price  СТАРОЕ
+`/stock <product_id> <new_stock>` - Изменить количество товара на складе  СТАРОЕ
+
+`/money <user_id> <amount>` - Прибавить amount пятаков юзеру user_id  СТАРОЕ
+`/logs <user_id>` - Логи юзера  СТАРОЕ

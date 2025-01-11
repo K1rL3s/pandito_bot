@@ -9,6 +9,7 @@ class SlashCommand(StrEnum):
     CART = "cart"
     TRANSFER = "transfer"
     ADMIN = "admin"
+    PANEL = "panel"
     BROADCAST = "broadcast"
     SECRET = "secret"
     SECRETS = "secrets"

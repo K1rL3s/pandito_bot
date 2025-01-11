@@ -10,7 +10,7 @@ from .states import AdminPanelStates
 router = Router(name=__file__)
 
 
-@router.message(Command(SlashCommand.ADMIN))
+@router.message(Command(SlashCommand.ADMIN, SlashCommand.PANEL))
 async def admin_panel(
     message: Message,
     dialog_manager: DialogManager,

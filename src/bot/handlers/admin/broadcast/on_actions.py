@@ -34,7 +34,7 @@ async def start_broadcast(
     await callback.answer("⏳ Рассылка началась!", show_alert=True)
 
     broadcast_message = dialog_manager.dialog_data["broadcast_message"]
-    result = await broadcaster.broadcast(callback.bot, broadcast_message)
+    result = await broadcaster.broadcast(broadcast_message)
     logging.info(
         "Broadcast from %d: ok=%d fail=%d",
         callback.from_user.id,
